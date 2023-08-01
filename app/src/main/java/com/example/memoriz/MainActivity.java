@@ -342,6 +342,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public boolean onLongClick(View v) {
                 Log.d(LOG_TAG, "onLongClick: ");
 
+                if(numint < allEds.size()) {
+                    ((Button) allEds.get(numint).findViewById(R.id.button_go)).setTextColor(Color.BLACK);
+                }
                 playStop();
                 playenable = false;
 
