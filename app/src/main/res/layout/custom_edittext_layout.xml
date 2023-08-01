@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="5dp"
+    >
+
+    <TextView
+        android:id="@+id/editText"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:tag="id1"
+        android:text="Satz"
+        android:textColor="@color/y"
+        android:textSize="22dp" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/editText"
+        android:layout_marginTop="0dp">
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editText"
+        android:layout_marginTop="0dp"
+        android:tag="id4"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/textViewID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:tag="id5"
+        android:text="TextView" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/editText2"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="10dp"
+        android:tag="id2"
+        android:text="------------"
+        android:textColor="@color/g"
+        android:textSize="22dp" />
+
+
+    <Button
+        android:id="@+id/button_go"
+        android:layout_width="66dp"
+        android:layout_height="50dp"
+        android:layout_alignBottom="@+id/divider"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="145dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="#545761"
+        android:tag="id3"
+        android:text="-"
+        android:textSize="16dp" />
+
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_below="@+id/editText2"
+        android:layout_marginTop="5dp"
+        android:background="@color/colorPrimaryDark"
+        android:textColor="@color/y" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"></LinearLayout>
+
+
+</RelativeLayout>

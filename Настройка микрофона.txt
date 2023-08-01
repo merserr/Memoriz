@@ -1,0 +1,3 @@
+Вызов инженерного Меню            *#*#3646633#*#*
+Настройка микрофона:
+Hardware Testing -> Audio -> Volume -> Audio Record UL Gain (180 -> 250)

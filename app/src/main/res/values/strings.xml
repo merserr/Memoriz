@@ -1,0 +1,79 @@
+<resources>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <string name="app_name">Memory</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab 3</string>
+    <string name="tab_text_4">Tab 4</string>
+    <string name="action_settings">setting</string>
+    <string name="read_DB">DATABASE</string>
+    <string name="get">+</string>
+    <string name="title_activity_Control_panel">control</string>
+
+    <string name="check">check</string>
+    <string name="titlepassword">Password:</string>
+    <string name="save_string">Save string</string>
+    <string name="delete_string">Delete string</string>
+    <string name="action_about">About</string>
+    <string name="about">About programm</string>
+    <string name="about_text">this program display arp data from Cisco router, append manufacturer and customer names from database</string>
+    <string name="ipaddress">192.168.1.4</string>
+    <string name="titlesatz">satz</string>
+    <string name="titleport">Port:</string>
+    <string name="titleusername">Username:</string>
+    <string name="titletranslate">translate</string>
+    <string name="titlefactory">factory:</string>
+    <string name="titlename">name:</string>
+    <string name="string_button_on">On</string>
+    <string name="string_button_off">off</string>
+    <string name="string_button_low">low</string>
+    <string name="string_button_medium">medium</string>
+    <string name="button_save">Save</string>
+    <string name="button_record_on">R_Start</string>
+    <string name="button_record_d">Record</string>
+    <string name="button_player_d">Play</string>
+    <string name="button_record_r">Record</string>
+    <string name="button_player_r">Play</string>
+    <string name="button_record_off">R_Stop</string>
+    <string name="button_player_on">Play_Start</string>
+    <string name="button_player_off">Play_Stop</string>
+    <string name="string_button_ping">PING</string>
+    <string name="pinganswer">...</string>
+    <string name="database">Database</string>
+    <string name="cisco">CISCO</string>
+    <string name="error_msg">Connect error!</string>
+    <string name="save_DB">save_DB</string>
+    <string name="action_save_load">Save/Load</string>
+    <string name="load">Load</string>
+    <string name="save">Save</string>
+    <string name="database_text">Store and Restore Database in folder Download</string>
+    <string name="privat">Privat Storage</string>
+    <string name="share">/storage/emulated/0/Download/netadminSSH.csv</string>
+    <string name="title">title</string>
+
+    <string-array name="lessons">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+    </string-array>
+
+</resources>

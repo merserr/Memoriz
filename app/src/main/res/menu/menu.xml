@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.memoriz.MainActivity">
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+
+
+    <!-- action button for copy -->
+    <item android:title="Update"
+        android:id="@+id/update"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+
+    <!-- action button for copy -->
+    <item android:title="About"
+        android:id="@+id/about"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+
+</menu>
