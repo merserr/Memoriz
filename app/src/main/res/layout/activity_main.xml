@@ -52,15 +52,15 @@
         </ScrollView>
 
         <Button
-            android:id="@+id/button_get_data"
+            android:id="@+id/button_training"
             android:layout_width="66dp"
-            android:layout_height="wrap_content"
+            android:layout_height="66dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
 
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="5dp"
-            android:backgroundTint="#323337"
+            android:backgroundTint="#888C51"
             android:text="@string/get"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="parent" />

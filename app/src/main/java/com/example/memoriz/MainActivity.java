@@ -39,13 +39,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.security.SecureRandom;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int counter;
     int counter2;
     int duration;
-
+    Double coefficient = 1.3;  //   коеффициент изменения задержки после воспроизведения
 
     private MediaRecorder mediaRecorder;
     //  private MediaPlayer mediaPlayer;
@@ -161,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         do{
             int themaIndex = cursor.getColumnIndex(DBHelper.KEY_LESSON);
             themen0[count_themen]= cursor.getString(themaIndex);
+        //    themen0[count_themen]= "not";
             //Log.d(LOG_TAG, "themen0 = " + themen0[count_themen]);
             count_themen++;
         } while (cursor.moveToNext());
@@ -217,15 +212,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //    allEds = new ArrayList<View>();
 
-        Button button_filling = (Button)findViewById(R.id.button_get_data);
+        Button button_training = (Button)findViewById(R.id.button_training);
         LinearLayout linear = (LinearLayout) findViewById(R.id.linear1);
-        button_filling.setOnClickListener(new View.OnClickListener() {
+        button_training.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(LOG_TAG, "button_filling1");
-                allEds.clear();
-                linear.removeAllViews();
-                Processing();
+                Log.d(LOG_TAG, "button_Training");
+        //        allEds.clear();
+        //        linear.removeAllViews();
+        //        Processing();
+
+            //    row = ((TextView)view.findViewWithTag("id3")).getText().toString();
+            //    satz = ((TextView)view.findViewWithTag("id1")).getText().toString();
+            //    translate = ((TextView)view.findViewWithTag("id2")).getText().toString();
+                Log.d(LOG_TAG, "thema  = "+thema);
+                Intent intent = new Intent(MainActivity.this, Training.class);
+                intent.putExtra("thema", thema);
+                intent.putExtra("row", "1");
+                intent.putExtra("satz", "satz");
+                intent.putExtra("translate", "translate");
+                //intent.setClass(ctx, Control_panel.class);
+
+
+
+                startActivity(intent);
+
+
             }
         });
     }
@@ -263,6 +275,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int deutschtextIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_DEUTSCHTEXT);
             int ourtextIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_OURTEXT);
             int idIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_ID);
+        //    allData[0]= "0";
+        //    allData[2]= "2";
+        //    allData[1]= "1";
             allData[0]= cursor2.getString(deutschtextIndex);
             allData[2]= cursor2.getString(ourtextIndex);
             allData[1]= cursor2.getString(idIndex);
@@ -430,14 +445,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void playStart(String fileName) {
-        Log.d(LOG_TAG, "===fileName=== = " + path + fileName);
+        Log.d(LOG_TAG, "===fileName0=== = " + path + fileName);
         try {
             releasePlayer();
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setDataSource(path+fileName);
             mediaPlayer.prepare();
-            duration=mediaPlayer.getDuration();
+            duration = mediaPlayer.getDuration();
             Log.d(LOG_TAG,"====Player start, duration = "+ duration);
+
+            Double dduration;
+            dduration = duration * coefficient;
+            Log.d(LOG_TAG,"====Player start, dduration = "+ dduration);
+            duration = Integer.valueOf(dduration.intValue());
+            Log.d(LOG_TAG,"====Player start, duration = "+ duration);
+
             mediaPlayer.start();
             mediaPlayer.setOnCompletionListener(this);
         } catch (Exception e) {
@@ -747,7 +769,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 public void run() {
                     if (playenable) playStart(filename_satz + ".mp3");
                 }
-            }, duration+500);
+            }, duration+1500);//пауза перед следующим повтором
             counter++;
 
             //Counter2 for spring to next row

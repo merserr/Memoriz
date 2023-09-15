@@ -12,4 +12,5 @@
 
 
     <dimen name="dimentionIP">20dp</dimen>
+    <dimen name="dimentiontext">30dp</dimen>
 </resources>

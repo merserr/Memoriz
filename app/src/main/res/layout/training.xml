@@ -1,0 +1,198 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@drawable/background5">
+    tools:context=".MainActivity">
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:max="6"/>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ABACD6"
+        app:layout_constraintTop_toTopOf="@+id/progressBar"
+        android:layout_marginTop="10dp"
+        tools:layout_editor_absoluteX="1dp"/>
+
+    <LinearLayout
+        android:id="@id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginRight="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title_satz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/titlesatz"
+            android:textAlignment="center"
+            android:textColor="@color/title"
+            android:textSize="@dimen/dimentionIP" />
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:ems="3"
+            android:textAlignment="center"
+            android:textColor="@color/y"
+            android:textSize="@dimen/dimentiontext"></EditText>
+
+
+        <TextView
+            android:id="@+id/title_macaddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:text="@string/titletranslate"
+            android:textAlignment="center"
+            android:textColor="@color/title"
+            android:textSize="@dimen/dimentionIP"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:ems="3"
+            android:textAlignment="center"
+            android:textColor="@color/g"
+            android:textSize="@dimen/dimentiontext"></EditText>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="510dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/button_play_1"
+            android:layout_width="300px"
+            android:layout_height="60dp"
+            android:layout_marginLeft="121dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/draw_button"
+            android:text="@string/play_1"
+            android:textColor="@color/title"></Button>
+
+        <Button
+            android:id="@+id/button_play_10"
+            android:layout_width="300px"
+            android:layout_height="60dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/draw_button"
+            android:text="@string/play_10"
+            android:textColor="@color/title"></Button>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="580dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/button_ruck"
+            android:layout_width="300px"
+            android:layout_height="60dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/draw_button"
+            android:text="@string/button_ruck"
+            android:textColor="@color/title"></Button>
+
+        <Button
+            android:id="@+id/button_auto"
+            android:layout_width="300px"
+            android:layout_height="60dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/draw_button"
+            android:text="@string/button_play"
+            android:textColor="@color/title"></Button>
+
+        <Button
+            android:id="@+id/button_vor"
+            android:layout_width="300px"
+            android:layout_height="60dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/draw_button"
+            android:text="@string/button_next"
+            android:textColor="@color/title"></Button>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="650dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:checked="true"
+                android:text="Sequens"
+                android:textColor="@color/wy" />
+
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Random"
+                android:textColor="@color/wy" />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+</RelativeLayout>

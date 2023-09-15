@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/editText"
-        android:layout_width="340dp"
+        android:layout_width="330dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
@@ -40,13 +40,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:tag="id5"
+        android:textColor="@color/wy"
         android:text="TextView" />
 
     </LinearLayout>
 
     <TextView
         android:id="@+id/editText2"
-        android:layout_width="340dp"
+        android:layout_width="330dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linearLayout"
         android:layout_alignParentLeft="true"
