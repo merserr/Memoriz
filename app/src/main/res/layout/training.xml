@@ -1,14 +1,14 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background5"
+    android:longClickable="false"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:background="@drawable/background5">
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin">
     tools:context=".MainActivity">
 
     <ProgressBar
@@ -16,19 +16,19 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:max="6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:max="6"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:background="#ABACD6"
         app:layout_constraintTop_toTopOf="@+id/progressBar"
-        android:layout_marginTop="10dp"
-        tools:layout_editor_absoluteX="1dp"/>
+        tools:layout_editor_absoluteX="1dp" />
 
     <LinearLayout
         android:id="@id/layout"
@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="@string/titlesatz"
+            android:text="@string/titlesatz2"
             android:textAlignment="center"
             android:textColor="@color/title"
             android:textSize="@dimen/dimentionIP" />
@@ -57,7 +57,7 @@
             android:ems="3"
             android:textAlignment="center"
             android:textColor="@color/y"
-            android:textSize="@dimen/dimentiontext"></EditText>
+            android:textSize="@dimen/dimentiontext2"></EditText>
 
 
         <TextView
@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="80dp"
-            android:text="@string/titletranslate"
+            android:text="@string/titlewort_ru"
             android:textAlignment="center"
             android:textColor="@color/title"
             android:textSize="@dimen/dimentionIP"
@@ -82,7 +82,20 @@
             android:textSize="@dimen/dimentiontext"></EditText>
 
 
+
     </LinearLayout>
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="420dp"
+        android:numStars="5"
+        android:rating="0"
+        android:stepSize="1"
+        android:theme="@style/RatingBar"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <LinearLayout
@@ -191,8 +204,16 @@
                 android:text="Random"
                 android:textColor="@color/wy" />
 
+            <RadioButton
+                android:id="@+id/radioButton3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Seq w/o pause"
+                android:textColor="@color/wy" />
+
         </RadioGroup>
 
     </LinearLayout>
+
 
 </RelativeLayout>

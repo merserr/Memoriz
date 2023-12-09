@@ -22,4 +22,11 @@
     <style name="Theme.Memoriz.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Memoriz.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@color/gr</item>
+        <item name="colorControlActivated">@color/y</item>
+
+    </style>
+
 </resources>

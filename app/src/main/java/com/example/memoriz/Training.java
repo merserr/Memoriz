@@ -5,6 +5,7 @@ package com.example.memoriz;
 //import static com.example.memory.MainActivity.MESSAGEOUTPUTCONTROL;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -23,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -52,15 +55,17 @@ public class Training extends Activity implements OnCompletionListener {
     String themen[];
     String Current_theme;
     public String themax;
-    final public String[][] training_data = new String[100][2];
+    final public String[][] training_data = new String[100][3];
     int count;
     int counter;
     String deutschtext="";
     String ourtext;
+    String rating;
     int duration;
     int my_lesson;
     int index_lesson;
-
+    int timepause1;
+    int timepause2;
 
     DBHelper dbHelper;
 
@@ -92,8 +97,11 @@ public class Training extends Activity implements OnCompletionListener {
     ProgressBar ProgressBar;
     RadioButton radioButton1;
     RadioButton radioButton2;
+    RadioButton radioButton3;
     Button button_play_1;
     Button button_play_10;
+    RatingBar ratingBar;
+    Cursor cursor3 = null;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -133,6 +141,9 @@ public class Training extends Activity implements OnCompletionListener {
         Spinner spinner = findViewById(R.id.spinner);
         radioButton1 = findViewById(R.id.radioButton1);
         radioButton2 = findViewById(R.id.radioButton2);
+        radioButton3 = findViewById(R.id.radioButton3);
+        ratingBar = findViewById(R.id.ratingBar);
+
 
         // Получаем список тем
         int count_themen=0;
@@ -221,15 +232,17 @@ public class Training extends Activity implements OnCompletionListener {
                     int deutschtextIndex = cursor3.getColumnIndex(com.example.memoriz.DBHelper.KEY_DEUTSCHTEXT);
                     int ourtextIndex = cursor3.getColumnIndex(com.example.memoriz.DBHelper.KEY_OURTEXT);
                     int idIndex = cursor3.getColumnIndex(com.example.memoriz.DBHelper.KEY_ID);
+                    int rating = cursor3.getColumnIndex(DBHelper.KEY_DEUTSCHSOUND);
                     allData[0]= cursor3.getString(deutschtextIndex);
                     allData[2]= cursor3.getString(ourtextIndex);
                     allData[1]= cursor3.getString(idIndex);
                     allData[3]= String.valueOf(count);
+                    allData[4]= cursor3.getString(rating);
 
                     training_data [count] [0] = allData[0];
                     training_data [count] [1] = allData[2];
-                    //training_data [count] [2] = cursor2.getString(idIndex);
-
+                    training_data [count] [2] = allData[4];
+                    Log.d(LOG_TAG, "Rating = " + allData[4]);
 
                     count++;
                 } while (cursor3.moveToNext());
@@ -307,7 +320,8 @@ public class Training extends Activity implements OnCompletionListener {
 
         });
 
-//=================================
+//=================================================================================================
+
 
 
         Button button_ruckwarts = (Button) findViewById(R.id.button_ruck);
@@ -326,11 +340,15 @@ public class Training extends Activity implements OnCompletionListener {
                     counter = random.nextInt(count);
                 }
 
+
+
                 deutschtext = training_data [counter] [0];
                 ourtext = training_data [counter] [1];
+                rating =  training_data [counter] [2];
 
                 Log.d(LOG_TAG, "deutschtext = "+ deutschtext);
                 Log.d(LOG_TAG, "ourtext = "+ ourtext);
+                Log.d(LOG_TAG, "Rating = "+ rating);
 
                 final TextView text = (TextView) findViewById(R.id.editText);
                 text.setText(". . .");
@@ -338,6 +356,7 @@ public class Training extends Activity implements OnCompletionListener {
                 final TextView text2 = (TextView) findViewById(R.id.editText2);
                 text2.setText(ourtext);
 
+                ratingBar.setRating(Float.parseFloat(rating));
 
 
             //    playStart(deutschtext+".mp3");
@@ -401,9 +420,11 @@ public class Training extends Activity implements OnCompletionListener {
 
                 deutschtext = training_data [counter] [0];
                 ourtext = training_data [counter] [1];
+                rating =  training_data [counter] [2];
 
                 Log.d(LOG_TAG, "deutschtext = "+ deutschtext);
                 Log.d(LOG_TAG, "ourtext = "+ ourtext);
+                Log.d(LOG_TAG, "Rating = "+ rating);
 
                 final TextView text = (TextView) findViewById(R.id.editText);
                 text.setText(". . .");
@@ -411,6 +432,7 @@ public class Training extends Activity implements OnCompletionListener {
                 final TextView text2 = (TextView) findViewById(R.id.editText2);
                 text2.setText(ourtext);
 
+                ratingBar.setRating(Float.parseFloat(rating));
 
 
                 //    playStart(deutschtext+".mp3");
@@ -428,7 +450,96 @@ public class Training extends Activity implements OnCompletionListener {
             }
         });
 
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            // Called when the user swipes the RatingBar
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float ratio, boolean fromUser) {
 
+                Log.d(LOG_TAG, "Rating1 = " + ratio);
+
+                int ratioint = Math.round(ratio);
+                rating = String.valueOf(ratioint);
+
+                Log.d(LOG_TAG, "rating = " + rating);
+                Log.d(LOG_TAG, "lesson = " + thema);
+                Log.d(LOG_TAG, "deutschtext = " + deutschtext);
+                Log.d(LOG_TAG, "owntext = " + ourtext);
+
+
+
+                // если есть слова, записываем в DB значение сложности
+                if(!deutschtext.equals("") && !ourtext.equals("")) {
+
+                    training_data[counter][2] = rating;
+                    SQLiteDatabase database = dbHelper.getWritableDatabase();
+                    ContentValues contentValues = new ContentValues();
+
+                    contentValues.put(DBHelper.KEY_LESSON, thema);
+                    contentValues.put(DBHelper.KEY_DEUTSCHTEXT, deutschtext);
+                    contentValues.put(DBHelper.KEY_OURTEXT, ourtext);
+                    contentValues.put(DBHelper.KEY_DEUTSCHSOUND, rating);
+
+                    Cursor cursor = database.query(
+                            "anfangtable",
+                            null,
+                            "lesson = ? AND deutschtext = ? AND owntext = ?",
+                            new String[]{thema, deutschtext, ourtext},
+                            null,
+                            null,
+                            null);
+
+                    if (cursor.moveToFirst()) {
+                        database.update(
+                                "anfangtable",
+                                contentValues,
+                                "deutschtext = ? AND owntext = ?",
+                                new String[]{deutschtext, ourtext,});
+                    }
+                // иначе выбираем сложность слов
+                } else {
+                    SQLiteDatabase database2 = dbHelper.getWritableDatabase();
+                    String allData[] = new String[5];
+                    count=0;
+
+                           cursor3 = database2.query(
+                                   "anfangtable",
+                                   null,
+                                   "lesson = ? AND deutschsound = ?",
+                                   new String[] {thema, rating},
+                                   null,
+                                   null,
+                                   null);
+//               new String[] {String.valueOf(my_lesson)},
+                           cursor3.moveToFirst();
+                           do{
+                               int deutschtextIndex = cursor3.getColumnIndex(com.example.memoriz.DBHelper.KEY_DEUTSCHTEXT);
+                               int ourtextIndex = cursor3.getColumnIndex(com.example.memoriz.DBHelper.KEY_OURTEXT);
+                               int idIndex = cursor3.getColumnIndex(com.example.memoriz.DBHelper.KEY_ID);
+                               int rating = cursor3.getColumnIndex(DBHelper.KEY_DEUTSCHSOUND);
+                               allData[0]= cursor3.getString(deutschtextIndex);
+                               allData[2]= cursor3.getString(ourtextIndex);
+                               allData[1]= cursor3.getString(idIndex);
+                               allData[3]= String.valueOf(count);
+                               allData[4]= cursor3.getString(rating);
+
+                               training_data [count] [0] = allData[0];
+                               training_data [count] [1] = allData[2];
+                               training_data [count] [2] = allData[4];
+                               Log.d(LOG_TAG, "Rating = " + allData[4]);
+
+                               count++;
+                           } while (cursor3.moveToNext());
+                           Log.d(LOG_TAG, "count = )" + count);
+                           dbHelper.close();
+                           //======================================================================
+
+                }
+
+            }
+         //================
+
+
+        });
     }
 
     private void running_play_1() {
@@ -446,7 +557,6 @@ public class Training extends Activity implements OnCompletionListener {
         Log.d(LOG_TAG, " == processing == ");
         //    dbHelper = new dbHelper(ctx);
 
-
     }
 
 
@@ -461,7 +571,7 @@ public class Training extends Activity implements OnCompletionListener {
                 public void run() {
                     if(autoplayenable){runiing_auto();}
                 }
-            }, duration+1500);
+            }, duration+timepause2);
         }
         deutschtext_is_play=false;
 
@@ -476,7 +586,7 @@ public class Training extends Activity implements OnCompletionListener {
                 public void run() {
                     if(play_10_enable){running_play_1();}
                 }
-            }, duration+1500);
+            }, duration+timepause2);
         }
 
     }
@@ -516,7 +626,7 @@ public class Training extends Activity implements OnCompletionListener {
     private void runiing_auto() {
 
         if(radioButton1.isChecked()){
-            if(counter<count) counter++;
+            if(counter<count-1) {counter++;} else {counter=0;}
         }
 
         if(radioButton2.isChecked()){
@@ -526,15 +636,39 @@ public class Training extends Activity implements OnCompletionListener {
         if(autoplayenable) {
         deutschtext = training_data [counter] [0];
         ourtext = training_data [counter] [1];
+        rating =  training_data [counter] [2];
 
-        Log.d(LOG_TAG, "deutschtext = "+ deutschtext);
-        Log.d(LOG_TAG, "ourtext = "+ ourtext);
+        switch (rating) {
+            case "1":   timepause1 = 2000;
+                        timepause2 = 500;
+                break;
+            case "2":   timepause1 = 3000;
+                        timepause2 = 1000;
+                break;
+            case "3":   timepause1 = 4000;
+                        timepause2 = 2000;
+                break;
+            case "4":   timepause1 = 5000;
+                        timepause2 = 3000;
+                break;
+            case "5":   timepause1 = 6000;
+                        timepause2 = 4000;
+                break;
+
+        }
+
+
+            Log.d(LOG_TAG, "deutschtext = "+ deutschtext);
+            Log.d(LOG_TAG, "ourtext = "+ ourtext);
+            Log.d(LOG_TAG, "Rating = "+ rating);
 
         final TextView text = (TextView) findViewById(R.id.editText);
         text.setText(". . .");
 
         final TextView text2 = (TextView) findViewById(R.id.editText2);
         text2.setText(ourtext);
+
+        ratingBar.setRating(Float.parseFloat(rating));
 
         filename_satz = ourtext.trim().replaceAll("\\p{Punct}","_");
         playStart(filename_satz + ".mp3");
@@ -549,6 +683,6 @@ public class Training extends Activity implements OnCompletionListener {
                 filename_satz = deutschtext.trim().replaceAll("\\p{Punct}","_");
                 if(autoplayenable) {playStart(filename_satz + ".mp3");}
             }
-        }, duration+2500);
+        }, duration + timepause1);
     }
 }

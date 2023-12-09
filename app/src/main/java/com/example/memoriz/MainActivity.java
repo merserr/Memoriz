@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -56,12 +58,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     CheckBox CheckBox3;
     CheckBox CheckBox1;
     CheckBox CheckBox2;
+    RadioButton radioButton0;
+    RadioButton radioButton1;
+    RadioButton radioButton2;
+    RadioButton radioButton3;
+    RadioButton radioButton4;
+    RadioButton radioButton5;
+    RadioButton radioButton6;
+
     DBHelper dbHelper;
     private List<View> allEds;
 
     int index;
     String indexstr;
     int countermax;
+    int counter2max;
     String dataForSaving="";
     private static final String LOG_TAG = "==MainActivity==";
   //  private static final String FILENAME = "deutsch_database.txt";
@@ -133,6 +144,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             toast.show();
             rootPath.mkdirs();
         }
+
+        radioButton0 = findViewById(R.id.radioButton0);
+        radioButton1 = findViewById(R.id.radioButton1);
+        radioButton2 = findViewById(R.id.radioButton2);
+        radioButton3 = findViewById(R.id.radioButton3);
+        radioButton4 = findViewById(R.id.radioButton4);
+        radioButton5 = findViewById(R.id.radioButton5);
+        radioButton6 = findViewById(R.id.radioButton6);
+
+
 
         ProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         Spinner spinner = findViewById(R.id.spinner);
@@ -275,21 +296,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int deutschtextIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_DEUTSCHTEXT);
             int ourtextIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_OURTEXT);
             int idIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_ID);
-        //    allData[0]= "0";
+            int colorIndex = cursor2.getColumnIndex(DBHelper.KEY_DEUTSCHSOUND);
+            //    allData[0]= "0";
         //    allData[2]= "2";
         //    allData[1]= "1";
             allData[0]= cursor2.getString(deutschtextIndex);
             allData[2]= cursor2.getString(ourtextIndex);
             allData[1]= cursor2.getString(idIndex);
             allData[3]= String.valueOf(count);
-                    createfield(allData);
+            allData[4]= cursor2.getString(colorIndex);
+            createfield(allData);
             count++;
         } while (cursor2.moveToNext());
-        Log.d(LOG_TAG, "count = )" + count);
+        Log.d(LOG_TAG, "allData[4] = " + allData[4]);
         dbHelper.close();
     }
 
 
+    @SuppressLint("ResourceAsColor")
     void createfield(String[] textfield){
       //  Context ctx = (Context)Fragment1.this.getActivity();
         LinearLayout linear = (LinearLayout) findViewById(R.id.linear1);
@@ -298,9 +322,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         TextView text = (TextView) view.findViewById(R.id.editText);
         text.setText(textfield[0]);
+        if(textfield[4].equals("1")){text.setTextColor(Color.GREEN);}
+        if(textfield[4].equals("2")){text.setTextColor(Color.YELLOW);}
+
+
 
         TextView text2 = (TextView) view.findViewById(R.id.editText2);
         text2.setText(textfield[2]);
+        if(textfield[4].equals("1")){text2.setTextColor(Color.GRAY);}
+        if(textfield[4].equals("2")){text2.setTextColor(Color.GRAY);}
 
         Button buttongo = (Button) view.findViewById(R.id.button_go);
         buttongo.setText(textfield[1]);
@@ -760,9 +790,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onCompletion(MediaPlayer MP) {
         Log.d(LOG_TAG,"====Player stopped====");
+        if(radioButton0.isChecked()){countermax=1;counter2max=1;}
+        if(radioButton1.isChecked()){countermax=1;counter2max=2;}
+        if(radioButton2.isChecked()){countermax=2;counter2max=2;}
+        if(radioButton3.isChecked()){countermax=3;counter2max=2;}
+        if(radioButton4.isChecked()){countermax=4;counter2max=3;}
 
         //Counter for play translate
-        if(counter < 4) {
+        if(counter < countermax) {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -773,7 +808,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             counter++;
 
             //Counter2 for spring to next row
-            if(counter2 >= 3){
+            if(counter2 >= counter2max){
                 ((Button) allEds.get(numint).findViewById(R.id.button_go)).setTextColor(Color.BLACK);
                 rowint++;
                 numint++;

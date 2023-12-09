@@ -65,6 +65,8 @@
     <string name="button_ruck">rew</string>
     <string name="play_10">play 10</string>
     <string name="play_1">play 1</string>
+    <string name="titlesatz2">Wort</string>
+    <string name="titlewort_ru">слово</string>
 
 
     <string-array name="lessons">
