@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="50dp"
         android:layout_marginRight="10dp"
         android:orientation="vertical">
 
@@ -43,7 +43,7 @@
             android:id="@+id/title_satz"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:text="@string/titlesatz2"
             android:textAlignment="center"
             android:textColor="@color/title"
@@ -52,7 +52,7 @@
         <EditText
             android:id="@+id/editText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             android:layout_marginTop="0dp"
             android:ems="3"
             android:textAlignment="center"
@@ -64,23 +64,21 @@
             android:id="@+id/title_macaddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="5dp"
             android:text="@string/titlewort_ru"
             android:textAlignment="center"
             android:textColor="@color/title"
-            android:textSize="@dimen/dimentionIP"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="@dimen/dimentionIP" />
 
         <EditText
             android:id="@+id/editText2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             android:layout_marginTop="0dp"
             android:ems="3"
             android:textAlignment="center"
             android:textColor="@color/g"
             android:textSize="@dimen/dimentiontext"></EditText>
-
 
 
     </LinearLayout>
@@ -106,11 +104,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/title"
+            android:text="REV" />
+
+
         <Button
             android:id="@+id/button_play_1"
             android:layout_width="300px"
             android:layout_height="60dp"
-            android:layout_marginLeft="121dp"
+            android:layout_marginLeft="41dp"
             android:layout_marginTop="0dp"
             android:layout_marginRight="12dp"
             android:background="@drawable/draw_button"
@@ -127,6 +133,7 @@
             android:background="@drawable/draw_button"
             android:text="@string/play_10"
             android:textColor="@color/title"></Button>
+
 
 
     </LinearLayout>

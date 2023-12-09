@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -27,6 +26,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RatingBar;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.security.SecureRandom;
@@ -66,6 +66,7 @@ public class Training extends Activity implements OnCompletionListener {
     int index_lesson;
     int timepause1;
     int timepause2;
+    int themaposition;
 
     DBHelper dbHelper;
 
@@ -86,7 +87,7 @@ public class Training extends Activity implements OnCompletionListener {
     Boolean player_is_played = false;
     Boolean recorder_is_record = false;
     Boolean autoplayenable = false;
-    Boolean deutschtext_is_play = false;
+    Boolean text_is_play = false;
     Boolean play_1_enable = false;
     Boolean play_10_enable = false;
 
@@ -98,6 +99,7 @@ public class Training extends Activity implements OnCompletionListener {
     RadioButton radioButton1;
     RadioButton radioButton2;
     RadioButton radioButton3;
+    Switch switch1;
     Button button_play_1;
     Button button_play_10;
     RatingBar ratingBar;
@@ -122,6 +124,7 @@ public class Training extends Activity implements OnCompletionListener {
         path = Environment.getExternalStorageDirectory() + "/Podcasts/Memory/";
 
         themax = getIntent().getStringExtra("thema");
+        themaposition = getIntent().getIntExtra("themaposition",0);
         row= getIntent().getStringExtra("row");
         satz = getIntent().getStringExtra("satz");
         translate = getIntent().getStringExtra("translate");
@@ -129,7 +132,8 @@ public class Training extends Activity implements OnCompletionListener {
         filename_translate = translate.trim().replaceAll("\\p{Punct}","_");
 
         Log.d(LOG_TAG, "themax  = "+themax);
-    //    Log.d(LOG_TAG, "satz  = "+satz);
+        Log.d(LOG_TAG, "themaposition  = "+themaposition);
+        //    Log.d(LOG_TAG, "satz  = "+satz);
     //    Log.d(LOG_TAG, "filename_satz  = "+filename_satz);
     //    Log.d(LOG_TAG, "translate = "+translate);
 
@@ -143,6 +147,7 @@ public class Training extends Activity implements OnCompletionListener {
         radioButton2 = findViewById(R.id.radioButton2);
         radioButton3 = findViewById(R.id.radioButton3);
         ratingBar = findViewById(R.id.ratingBar);
+        switch1 = findViewById(R.id.switch1);
 
 
         // Получаем список тем
@@ -187,6 +192,7 @@ public class Training extends Activity implements OnCompletionListener {
        // Вызываем адаптер
         spinner.setAdapter(adapter);
 
+        spinner.setSelection(themaposition);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
 
@@ -195,6 +201,9 @@ public class Training extends Activity implements OnCompletionListener {
                 //  String[] choose = themen;
 
                // selectedItemPosition = 2;
+
+
+
                 try {
                     //   thema = choose[selectedItemPosition];
                     thema = themen[selectedItemPosition];
@@ -563,7 +572,7 @@ public class Training extends Activity implements OnCompletionListener {
     public void onCompletion(MediaPlayer mediaPlayer) {
         Log.d(LOG_TAG, "onCompletion");
 
-        if(autoplayenable && deutschtext_is_play){
+        if(autoplayenable && text_is_play){
 
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -573,7 +582,7 @@ public class Training extends Activity implements OnCompletionListener {
                 }
             }, duration+timepause2);
         }
-        deutschtext_is_play=false;
+        text_is_play =false;
 
         play_1_enable = false;
         button_play_1.setText("play 1");
@@ -663,14 +672,26 @@ public class Training extends Activity implements OnCompletionListener {
             Log.d(LOG_TAG, "Rating = "+ rating);
 
         final TextView text = (TextView) findViewById(R.id.editText);
-        text.setText(". . .");
+        if(switch1.isChecked()) {
+            text.setText(deutschtext);
+        }else{
+            text.setText(". . .");
+        }
 
         final TextView text2 = (TextView) findViewById(R.id.editText2);
-        text2.setText(ourtext);
+        if(switch1.isChecked()) {
+            text2.setText(". . .");
+        }else{
+            text2.setText(ourtext);
+        }
 
         ratingBar.setRating(Float.parseFloat(rating));
 
-        filename_satz = ourtext.trim().replaceAll("\\p{Punct}","_");
+            if(switch1.isChecked()) {
+                filename_satz = deutschtext.trim().replaceAll("\\p{Punct}", "_");
+            }else{
+                filename_satz = ourtext.trim().replaceAll("\\p{Punct}", "_");
+            }
         playStart(filename_satz + ".mp3");
         }
         Handler handler = new Handler();
@@ -678,9 +699,20 @@ public class Training extends Activity implements OnCompletionListener {
             @Override
             public void run() {
                 final TextView text = (TextView) findViewById(R.id.editText);
-                text.setText(deutschtext);
-                deutschtext_is_play=true;
-                filename_satz = deutschtext.trim().replaceAll("\\p{Punct}","_");
+                final TextView text2 = (TextView) findViewById(R.id.editText2);
+
+                if(switch1.isChecked()) {
+                    text2.setText(ourtext);
+                }else{
+                    text.setText(deutschtext);
+                }
+
+                text_is_play =true;
+                if(switch1.isChecked()) {
+                    filename_satz = ourtext.trim().replaceAll("\\p{Punct}","_");
+                }else{
+                    filename_satz = deutschtext.trim().replaceAll("\\p{Punct}","_");
+                }
                 if(autoplayenable) {playStart(filename_satz + ".mp3");}
             }
         }, duration + timepause1);

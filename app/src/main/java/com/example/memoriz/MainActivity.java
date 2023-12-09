@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int index_oursound;
     int index_deutschsound;
     int progress;
+    int themaposition;
 
     String satz;
     String translate ="1122.3344.5566";
@@ -208,6 +209,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //String[] choose = getResources().getStringArray(R.array.lessons);
               //  String[] choose = themen;
 
+                themaposition = selectedItemPosition;
+
                 try {
                  //   thema = choose[selectedItemPosition];
                     thema = themen[selectedItemPosition];
@@ -249,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(LOG_TAG, "thema  = "+thema);
                 Intent intent = new Intent(MainActivity.this, Training.class);
                 intent.putExtra("thema", thema);
+                intent.putExtra("themaposition", themaposition);
                 intent.putExtra("row", "1");
                 intent.putExtra("satz", "satz");
                 intent.putExtra("translate", "translate");
