@@ -159,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         Spinner spinner = findViewById(R.id.spinner);
 
+        //==========================================================================================
         // Получаем список тем
         int count_themen=0;
         dbHelper = new DBHelper(this);
@@ -204,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             toast.show();
             Log.d(LOG_TAG, "===============Exeption==============");
         }
+//==========================================================================================
 
 
         // Настраиваем адаптер
@@ -623,7 +625,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.about:
                 Toast.makeText(this, "about Clicked", Toast.LENGTH_SHORT).show();
-                read_file_from_SD_2();
+              //  read_file_from_SD_2();
                 break;
         }
 
@@ -769,6 +771,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(MainActivity.this, "File format is wrong!", Toast.LENGTH_LONG).show();
         }
         dbHelper.close();
+        getthema();
     }
 
 
@@ -843,4 +846,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+    public void getthema(){
+        //==========================================================================================
+        // Получаем список тем
+        int count_themen=0;
+        dbHelper = new DBHelper(this);
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        String [] themen0 = new String[100];
+
+        try {
+
+            Cursor cursor = database.query(
+                    "anfangtable",
+                    null,
+                    null,
+                    null,
+                    "Lesson",
+                    null,
+                    "_id");
+//               new String[] {String.valueOf(my_lesson)},
+            cursor.moveToFirst();
+            do {
+                int themaIndex = cursor.getColumnIndex(DBHelper.KEY_LESSON);
+                themen0[count_themen] = cursor.getString(themaIndex);
+                //    themen0[count_themen]= "not";
+                //Log.d(LOG_TAG, "themen0 = " + themen0[count_themen]);
+                count_themen++;
+            } while (cursor.moveToNext());
+
+            dbHelper.close();
+            themen = new String[count_themen];
+            //count_themen--;
+            do {
+                //Log.d(LOG_TAG, "count_themen0 = " + count_themen);
+                String a = themen0[count_themen - 1];
+                themen[count_themen - 1] = a;
+                count_themen--;
+                // Log.d(LOG_TAG, "themen = " + themen[count_themen]);
+
+            } while (count_themen > 0);
+
+        } catch (Exception $e) {
+            // Ничего не делаем
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "неисправна База Данных", Toast.LENGTH_SHORT);
+            toast.show();
+            Log.d(LOG_TAG, "===============Exeption==============");
+        }
+//==========================================================================================
+
+    }
+
 }

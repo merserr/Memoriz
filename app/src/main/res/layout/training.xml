@@ -113,14 +113,14 @@
 
 
         <Button
-            android:id="@+id/button_play_1"
+            android:id="@+id/button_auto"
             android:layout_width="300px"
             android:layout_height="60dp"
             android:layout_marginLeft="41dp"
             android:layout_marginTop="0dp"
             android:layout_marginRight="12dp"
             android:background="@drawable/draw_button"
-            android:text="@string/play_1"
+            android:text="@string/button_play"
             android:textColor="@color/title"></Button>
 
         <Button
@@ -158,14 +158,14 @@
             android:textColor="@color/title"></Button>
 
         <Button
-            android:id="@+id/button_auto"
+            android:id="@+id/button_play_1"
             android:layout_width="300px"
             android:layout_height="60dp"
             android:layout_marginLeft="0dp"
             android:layout_marginTop="0dp"
             android:layout_marginRight="12dp"
             android:background="@drawable/draw_button"
-            android:text="@string/button_play"
+            android:text="@string/play_1"
             android:textColor="@color/title"></Button>
 
         <Button

@@ -91,7 +91,7 @@ public class Training extends Activity implements OnCompletionListener {
     Boolean autoplayenable = false;
     Boolean text_is_play = false;
     Boolean play_1_enable = false;
-    Boolean play_10_enable = false;
+    Boolean repeat_enable = false;
 
     Button button_record_d;
     Button button_record_r;
@@ -103,9 +103,11 @@ public class Training extends Activity implements OnCompletionListener {
     RadioButton radioButton3;
     Switch switch1;
     Button button_play_1;
-    Button button_play_10;
+    Button button_repeat;
     RatingBar ratingBar;
     Cursor cursor3 = null;
+    TextView text;
+    TextView text2;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -151,6 +153,8 @@ public class Training extends Activity implements OnCompletionListener {
         ratingBar = findViewById(R.id.ratingBar);
         switch1 = findViewById(R.id.switch1);
 
+        text = (TextView) findViewById(R.id.editText);
+        text2 = (TextView) findViewById(R.id.editText2);
 
         // Получаем список тем
         int count_themen=0;
@@ -294,6 +298,8 @@ public class Training extends Activity implements OnCompletionListener {
                     if(! deutschtext.isEmpty()){
                         play_1_enable = true;
                         button_play_1.setText("stop");
+                        text.setText(deutschtext);
+                        text2.setText(ourtext);
                         playStop();
                     }
                 }
@@ -307,24 +313,29 @@ public class Training extends Activity implements OnCompletionListener {
 
         });
 
-        button_play_10 = (Button) findViewById(R.id.button_play_10);
+        button_repeat = (Button) findViewById(R.id.button_play_10);
         //  button_vorwarts.setText(R.string.button_vorwarts);
-        button_play_10.setOnClickListener(new OnClickListener() {
+        button_repeat.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(LOG_TAG, "onClick button_play_10 ");
 
-                if(play_10_enable){
-                    play_10_enable = false;
-                    button_play_10.setText("repeat");
+                if(repeat_enable){
+                    repeat_enable = false;
+                    stop = true;
+                    button_repeat.setText("repeat");
                 }else{
                     if(! deutschtext.isEmpty()){
-                        play_10_enable = true;
-                        button_play_10.setText("stop");
+                        repeat_enable = true;
+                        button_repeat.setText("stop");
+                        text.setText(deutschtext);
+                        text2.setText(ourtext);
+                        stop = false;
                         playStop();
                     }
                 }
-                if(play_10_enable && ! deutschtext.isEmpty()) {
+                if(repeat_enable && ! deutschtext.isEmpty()) {
+                    Log.d(LOG_TAG, "stop0 = " + stop);
                     running_play_1();
                 }
             }
@@ -343,6 +354,7 @@ public class Training extends Activity implements OnCompletionListener {
             public void onClick(View view) {
                 Log.d(LOG_TAG, "onClick button_ruckwarts ");
 
+                stop = false;
                 if(radioButton1.isChecked()){
                     if(counter>0) {counter--;} else {counter=0;}
                 }
@@ -363,14 +375,14 @@ public class Training extends Activity implements OnCompletionListener {
                 Log.d(LOG_TAG, "ourtext = "+ ourtext);
                 Log.d(LOG_TAG, "Rating = "+ rating);
 
-                final TextView text = (TextView) findViewById(R.id.editText);
+
                 if(switch1.isChecked()) {
                     text.setText(deutschtext);
                 }else{
                     text.setText(". . .");
                 }
 
-                final TextView text2 = (TextView) findViewById(R.id.editText2);
+  //              final TextView text2 = (TextView) findViewById(R.id.editText2);
                 if(switch1.isChecked()) {
                     text2.setText(". . .");
                 }else{
@@ -389,7 +401,7 @@ public class Training extends Activity implements OnCompletionListener {
                     public void run() {
 
                         if(!stop){
-                        final TextView text = (TextView) findViewById(R.id.editText);
+  //                      final TextView text = (TextView) findViewById(R.id.editText);
                         if (switch1.isChecked()) {
                             text2.setText(ourtext);
                         } else {
@@ -419,15 +431,17 @@ public class Training extends Activity implements OnCompletionListener {
             if(autoplayenable){
                 autoplayenable = false;
                 button_auto.setText("run");
+                stop = true;
                 playStop();
                 releasePlayer();
             }else{
+                stop = false;
                 autoplayenable = true;
                 button_auto.setText("stop");
             }
 
                 if(autoplayenable) {
-                    runiing_auto();
+                    running_auto();
                 }
 
             }
@@ -443,6 +457,7 @@ public class Training extends Activity implements OnCompletionListener {
             public void onClick(View view) {
                 Log.d(LOG_TAG, "onClick button_vorwarts ");
 
+                stop = false;
                 if(radioButton1.isChecked()){
                     if(counter<count) counter++;
                 }
@@ -460,14 +475,14 @@ public class Training extends Activity implements OnCompletionListener {
                 Log.d(LOG_TAG, "ourtext = "+ ourtext);
                 Log.d(LOG_TAG, "Rating = "+ rating);
 
-                final TextView text = (TextView) findViewById(R.id.editText);
+   //             final TextView text = (TextView) findViewById(R.id.editText);
                 if(switch1.isChecked()) {
                     text.setText(deutschtext);
                 }else{
                     text.setText(". . .");
                 }
 
-                final TextView text2 = (TextView) findViewById(R.id.editText2);
+   //             final TextView text2 = (TextView) findViewById(R.id.editText2);
                 if(switch1.isChecked()) {
                     text2.setText(". . .");
                 }else{
@@ -484,7 +499,7 @@ public class Training extends Activity implements OnCompletionListener {
                     @Override
                     public void run() {
                         if (!stop){
-                            final TextView text = (TextView) findViewById(R.id.editText);
+   //                         final TextView text = (TextView) findViewById(R.id.editText);
                         if (switch1.isChecked()) {
                             text2.setText(ourtext);
                         } else {
@@ -544,8 +559,8 @@ public class Training extends Activity implements OnCompletionListener {
                         database.update(
                                 "anfangtable",
                                 contentValues,
-                                "deutschtext = ? AND owntext = ?",
-                                new String[]{deutschtext, ourtext,});
+                                "lesson = ? AND deutschtext = ? AND owntext = ?",
+                                new String[]{thema, deutschtext, ourtext,});
                     }
                 // иначе выбираем сложность слов
                 } else {
@@ -614,6 +629,7 @@ public class Training extends Activity implements OnCompletionListener {
 
     public void onCompletion(MediaPlayer mediaPlayer) {
         Log.d(LOG_TAG, "onCompletion");
+        Log.d(LOG_TAG, "stop = " + stop);
 
         if(autoplayenable && text_is_play){
 
@@ -623,7 +639,7 @@ public class Training extends Activity implements OnCompletionListener {
                 public void run() {
                     if(!stop){
                     if (autoplayenable) {
-                        runiing_auto();
+                        running_auto();
                     }
                 }
                 }
@@ -633,14 +649,15 @@ public class Training extends Activity implements OnCompletionListener {
         play_1_enable = false;
         button_play_1.setText("play");
 
-        if(play_10_enable){
+        if(repeat_enable){
 
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if(!stop){
-                    if (play_10_enable) {
+                    if (repeat_enable) {
+                        Log.d(LOG_TAG, "===running_play_1=== = ");
                         running_play_1();
                     }
                 }
@@ -682,7 +699,7 @@ public class Training extends Activity implements OnCompletionListener {
         }
     }
 //=========================================
-    private void runiing_auto() {
+    private void running_auto() {
 
         if(radioButton1.isChecked()){
             if(counter<count-1) {counter++;} else {counter=0;}
@@ -725,12 +742,13 @@ public class Training extends Activity implements OnCompletionListener {
 
         }
 
+            Log.d(LOG_TAG, "count................. = "+ count);
             Log.d(LOG_TAG, "counter................. = "+ counter);
             Log.d(LOG_TAG, "deutschtext = "+ deutschtext);
             Log.d(LOG_TAG, "ourtext = "+ ourtext);
             Log.d(LOG_TAG, "Rating = "+ rating);
 
-        final TextView text = (TextView) findViewById(R.id.editText);
+  //      final TextView text = (TextView) findViewById(R.id.editText);
 
             if(radioButton3.isChecked()){
                 if(revers) {
@@ -748,7 +766,7 @@ public class Training extends Activity implements OnCompletionListener {
 
 
 
-        final TextView text2 = (TextView) findViewById(R.id.editText2);
+  //      final TextView text2 = (TextView) findViewById(R.id.editText2);
             if(radioButton3.isChecked()){
                 if(revers) {
                     text2.setText(". . .");
@@ -788,8 +806,8 @@ public class Training extends Activity implements OnCompletionListener {
 
                 if(!stop){
 
-                final TextView text = (TextView) findViewById(R.id.editText);
-                final TextView text2 = (TextView) findViewById(R.id.editText2);
+  //              final TextView text = (TextView) findViewById(R.id.editText);
+  //              final TextView text2 = (TextView) findViewById(R.id.editText2);
 
                 if (radioButton3.isChecked()) {
                     if (revers) {
