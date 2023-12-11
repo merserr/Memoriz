@@ -67,6 +67,8 @@ public class Training extends Activity implements OnCompletionListener {
     int timepause1;
     int timepause2;
     int themaposition;
+    boolean revers;
+    boolean stop;
 
     DBHelper dbHelper;
 
@@ -155,6 +157,7 @@ public class Training extends Activity implements OnCompletionListener {
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         String [] themen0 = new String[100];
+
         Cursor cursor = database.query(
                 "anfangtable",
                 null,
@@ -251,11 +254,11 @@ public class Training extends Activity implements OnCompletionListener {
                     training_data [count] [0] = allData[0];
                     training_data [count] [1] = allData[2];
                     training_data [count] [2] = allData[4];
-                    Log.d(LOG_TAG, "Rating = " + allData[4]);
+                //    Log.d(LOG_TAG, "Rating = " + allData[4]);
 
                     count++;
                 } while (cursor3.moveToNext());
-                Log.d(LOG_TAG, "count = )" + count);
+                Log.d(LOG_TAG, "count = " + count);
                 dbHelper.close();
 
 
@@ -286,7 +289,7 @@ public class Training extends Activity implements OnCompletionListener {
 
                 if(play_1_enable){
                     play_1_enable = false;
-                    button_play_1.setText("play 1");
+                    button_play_1.setText("play");
                 }else{
                     if(! deutschtext.isEmpty()){
                         play_1_enable = true;
@@ -313,7 +316,7 @@ public class Training extends Activity implements OnCompletionListener {
 
                 if(play_10_enable){
                     play_10_enable = false;
-                    button_play_10.setText("play 10");
+                    button_play_10.setText("repeat");
                 }else{
                     if(! deutschtext.isEmpty()){
                         play_10_enable = true;
@@ -351,6 +354,7 @@ public class Training extends Activity implements OnCompletionListener {
 
 
 
+
                 deutschtext = training_data [counter] [0];
                 ourtext = training_data [counter] [1];
                 rating =  training_data [counter] [2];
@@ -360,10 +364,19 @@ public class Training extends Activity implements OnCompletionListener {
                 Log.d(LOG_TAG, "Rating = "+ rating);
 
                 final TextView text = (TextView) findViewById(R.id.editText);
-                text.setText(". . .");
+                if(switch1.isChecked()) {
+                    text.setText(deutschtext);
+                }else{
+                    text.setText(". . .");
+                }
 
                 final TextView text2 = (TextView) findViewById(R.id.editText2);
-                text2.setText(ourtext);
+                if(switch1.isChecked()) {
+                    text2.setText(". . .");
+                }else{
+                    text2.setText(ourtext);
+                }
+
 
                 ratingBar.setRating(Float.parseFloat(rating));
 
@@ -374,10 +387,22 @@ public class Training extends Activity implements OnCompletionListener {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+
+                        if(!stop){
                         final TextView text = (TextView) findViewById(R.id.editText);
-                        text.setText(deutschtext);
-                        filename_satz = deutschtext.trim().replaceAll("\\p{Punct}","_");
+                        if (switch1.isChecked()) {
+                            text2.setText(ourtext);
+                        } else {
+                            text.setText(deutschtext);
+                        }
+                        if (switch1.isChecked()) {
+                            filename_satz = ourtext.trim().replaceAll("\\p{Punct}", "_");
+                        } else {
+                            filename_satz = deutschtext.trim().replaceAll("\\p{Punct}", "_");
+                        }
                         playStart(filename_satz + ".mp3");
+
+                    }
                     }
                 }, duration+1500);
 
@@ -393,7 +418,7 @@ public class Training extends Activity implements OnCompletionListener {
 
             if(autoplayenable){
                 autoplayenable = false;
-                button_auto.setText("play");
+                button_auto.setText("run");
                 playStop();
                 releasePlayer();
             }else{
@@ -436,10 +461,18 @@ public class Training extends Activity implements OnCompletionListener {
                 Log.d(LOG_TAG, "Rating = "+ rating);
 
                 final TextView text = (TextView) findViewById(R.id.editText);
-                text.setText(". . .");
+                if(switch1.isChecked()) {
+                    text.setText(deutschtext);
+                }else{
+                    text.setText(". . .");
+                }
 
                 final TextView text2 = (TextView) findViewById(R.id.editText2);
-                text2.setText(ourtext);
+                if(switch1.isChecked()) {
+                    text2.setText(". . .");
+                }else{
+                    text2.setText(ourtext);
+                }
 
                 ratingBar.setRating(Float.parseFloat(rating));
 
@@ -450,10 +483,20 @@ public class Training extends Activity implements OnCompletionListener {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        final TextView text = (TextView) findViewById(R.id.editText);
-                        text.setText(deutschtext);
-                        filename_satz = deutschtext.trim().replaceAll("\\p{Punct}","_");
+                        if (!stop){
+                            final TextView text = (TextView) findViewById(R.id.editText);
+                        if (switch1.isChecked()) {
+                            text2.setText(ourtext);
+                        } else {
+                            text.setText(deutschtext);
+                        }
+                        if (switch1.isChecked()) {
+                            filename_satz = ourtext.trim().replaceAll("\\p{Punct}", "_");
+                        } else {
+                            filename_satz = deutschtext.trim().replaceAll("\\p{Punct}", "_");
+                        }
                         playStart(filename_satz + ".mp3");
+                    }
                     }
                 }, duration+1500); //пауза после нашего слова
             }
@@ -464,7 +507,7 @@ public class Training extends Activity implements OnCompletionListener {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float ratio, boolean fromUser) {
 
-                Log.d(LOG_TAG, "Rating1 = " + ratio);
+            //    Log.d(LOG_TAG, "Rating1 = " + ratio);
 
                 int ratioint = Math.round(ratio);
                 rating = String.valueOf(ratioint);
@@ -534,11 +577,11 @@ public class Training extends Activity implements OnCompletionListener {
                                training_data [count] [0] = allData[0];
                                training_data [count] [1] = allData[2];
                                training_data [count] [2] = allData[4];
-                               Log.d(LOG_TAG, "Rating = " + allData[4]);
+                           //    Log.d(LOG_TAG, "Rating = " + allData[4]);
 
                                count++;
                            } while (cursor3.moveToNext());
-                           Log.d(LOG_TAG, "count = )" + count);
+                           Log.d(LOG_TAG, "count = " + count);
                            dbHelper.close();
                            //======================================================================
 
@@ -578,14 +621,17 @@ public class Training extends Activity implements OnCompletionListener {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(autoplayenable){runiing_auto();}
+                    if(!stop){
+                    if (autoplayenable) {
+                        runiing_auto();
+                    }
+                }
                 }
             }, duration+timepause2);
         }
         text_is_play =false;
-
         play_1_enable = false;
-        button_play_1.setText("play 1");
+        button_play_1.setText("play");
 
         if(play_10_enable){
 
@@ -593,7 +639,11 @@ public class Training extends Activity implements OnCompletionListener {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(play_10_enable){running_play_1();}
+                    if(!stop){
+                    if (play_10_enable) {
+                        running_play_1();
+                    }
+                }
                 }
             }, duration+timepause2);
         }
@@ -624,7 +674,7 @@ public class Training extends Activity implements OnCompletionListener {
             mediaPlayer.setDataSource(path+fileName);
             mediaPlayer.prepare();
             duration=mediaPlayer.getDuration();
-            Log.d(LOG_TAG,"====Player start, duration = "+ duration);
+        //    Log.d(LOG_TAG,"====Player start, duration = "+ duration);
             mediaPlayer.start();
             mediaPlayer.setOnCompletionListener(this);
         } catch (Exception e) {
@@ -642,6 +692,15 @@ public class Training extends Activity implements OnCompletionListener {
             SecureRandom random = new SecureRandom();
             counter = random.nextInt(count);
         }
+
+        if(radioButton3.isChecked()){
+            SecureRandom random = new SecureRandom();
+            revers = random.nextBoolean();
+
+            SecureRandom random2 = new SecureRandom();
+            counter = random2.nextInt(count);
+        }
+
         if(autoplayenable) {
         deutschtext = training_data [counter] [0];
         ourtext = training_data [counter] [1];
@@ -666,55 +725,124 @@ public class Training extends Activity implements OnCompletionListener {
 
         }
 
-
+            Log.d(LOG_TAG, "counter................. = "+ counter);
             Log.d(LOG_TAG, "deutschtext = "+ deutschtext);
             Log.d(LOG_TAG, "ourtext = "+ ourtext);
             Log.d(LOG_TAG, "Rating = "+ rating);
 
         final TextView text = (TextView) findViewById(R.id.editText);
-        if(switch1.isChecked()) {
-            text.setText(deutschtext);
-        }else{
-            text.setText(". . .");
-        }
+
+            if(radioButton3.isChecked()){
+                if(revers) {
+                    text.setText(deutschtext);
+                }else{
+                    text.setText(". . .");
+                }
+            }else{
+                if(switch1.isChecked()) {
+                    text.setText(deutschtext);
+                }else{
+                    text.setText(". . .");
+                }
+            }
+
+
 
         final TextView text2 = (TextView) findViewById(R.id.editText2);
-        if(switch1.isChecked()) {
-            text2.setText(". . .");
-        }else{
-            text2.setText(ourtext);
-        }
+            if(radioButton3.isChecked()){
+                if(revers) {
+                    text2.setText(". . .");
+                }else{
+                    text2.setText(ourtext);
+                }
+            }else{
+                if(switch1.isChecked()) {
+                    text2.setText(". . .");
+                }else{
+                    text2.setText(ourtext);
+                }
+            }
 
         ratingBar.setRating(Float.parseFloat(rating));
 
-            if(switch1.isChecked()) {
-                filename_satz = deutschtext.trim().replaceAll("\\p{Punct}", "_");
+            if(radioButton3.isChecked()){
+                if(revers) {
+                    filename_satz = deutschtext.trim().replaceAll("\\p{Punct}", "_");
+                }else{
+                    filename_satz = ourtext.trim().replaceAll("\\p{Punct}", "_");
+                }
             }else{
-                filename_satz = ourtext.trim().replaceAll("\\p{Punct}", "_");
+                if(switch1.isChecked()) {
+                    filename_satz = deutschtext.trim().replaceAll("\\p{Punct}", "_");
+                }else{
+                    filename_satz = ourtext.trim().replaceAll("\\p{Punct}", "_");
+                }
             }
+
         playStart(filename_satz + ".mp3");
         }
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+
+                if(!stop){
+
                 final TextView text = (TextView) findViewById(R.id.editText);
                 final TextView text2 = (TextView) findViewById(R.id.editText2);
 
-                if(switch1.isChecked()) {
-                    text2.setText(ourtext);
-                }else{
-                    text.setText(deutschtext);
+                if (radioButton3.isChecked()) {
+                    if (revers) {
+                        text2.setText(ourtext);
+                    } else {
+                        text.setText(deutschtext);
+                    }
+                } else {
+                    if (switch1.isChecked()) {
+                        text2.setText(ourtext);
+                    } else {
+                        text.setText(deutschtext);
+                    }
                 }
 
-                text_is_play =true;
-                if(switch1.isChecked()) {
-                    filename_satz = ourtext.trim().replaceAll("\\p{Punct}","_");
-                }else{
-                    filename_satz = deutschtext.trim().replaceAll("\\p{Punct}","_");
+
+                text_is_play = true;
+                if (radioButton3.isChecked()) {
+                    if (revers) {
+                        filename_satz = ourtext.trim().replaceAll("\\p{Punct}", "_");
+                    } else {
+                        filename_satz = deutschtext.trim().replaceAll("\\p{Punct}", "_");
+                    }
+                } else {
+                    if (switch1.isChecked()) {
+                        filename_satz = ourtext.trim().replaceAll("\\p{Punct}", "_");
+                    } else {
+                        filename_satz = deutschtext.trim().replaceAll("\\p{Punct}", "_");
+                    }
                 }
-                if(autoplayenable) {playStart(filename_satz + ".mp3");}
+
+                if (autoplayenable) {
+                    playStart(filename_satz + ".mp3");
+                }
+            }
             }
         }, duration + timepause1);
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        Log.d(LOG_TAG, "onDestroy");
+
+        stop = true;
+        playStop();
+        releasePlayer();
+      //  handler.removeCallbacks(myRunnable);
+
+    }
+    @Override
+    protected void onStop(){
+        super.onStop();
+        Log.d(LOG_TAG, "onStop");
     }
 }

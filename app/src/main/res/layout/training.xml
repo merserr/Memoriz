@@ -215,7 +215,7 @@
                 android:id="@+id/radioButton3"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Seq w/o pause"
+                android:text="Full Random"
                 android:textColor="@color/wy" />
 
         </RadioGroup>

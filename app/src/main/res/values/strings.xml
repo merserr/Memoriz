@@ -59,12 +59,12 @@
     <string name="privat">Privat Storage</string>
     <string name="share">/storage/emulated/0/Download/netadminSSH.csv</string>
     <string name="title">title</string>
-    <string name="button_play">Play x</string>
+    <string name="button_play">Run</string>
     <string name="button_stop">Stop</string>
     <string name="button_next">Next</string>
     <string name="button_ruck">rew</string>
-    <string name="play_10">play 10</string>
-    <string name="play_1">play 1</string>
+    <string name="play_10">repeat</string>
+    <string name="play_1">play</string>
     <string name="titlesatz2">Wort</string>
     <string name="titlewort_ru">слово</string>
 

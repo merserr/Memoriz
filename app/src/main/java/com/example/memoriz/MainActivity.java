@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String name_sound_file_u;
     String name_sound_file_d ="s";
     String thema;
-    String themen[];
+    String themen[]={"--- No Database ---", "second"};
 
     int totalcount;
     int index_id;
@@ -164,35 +164,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         String [] themen0 = new String[100];
-        Cursor cursor = database.query(
-                "anfangtable",
-                null,
-                null,
-                null,
-                "Lesson",
-                null,
-                "_id");
+
+        try {
+
+            Cursor cursor = database.query(
+                    "anfangtable",
+                    null,
+                    null,
+                    null,
+                    "Lesson",
+                    null,
+                    "_id");
 //               new String[] {String.valueOf(my_lesson)},
-        cursor.moveToFirst();
-        do{
-            int themaIndex = cursor.getColumnIndex(DBHelper.KEY_LESSON);
-            themen0[count_themen]= cursor.getString(themaIndex);
-        //    themen0[count_themen]= "not";
-            //Log.d(LOG_TAG, "themen0 = " + themen0[count_themen]);
-            count_themen++;
-        } while (cursor.moveToNext());
+            cursor.moveToFirst();
+            do {
+                int themaIndex = cursor.getColumnIndex(DBHelper.KEY_LESSON);
+                themen0[count_themen] = cursor.getString(themaIndex);
+                //    themen0[count_themen]= "not";
+                //Log.d(LOG_TAG, "themen0 = " + themen0[count_themen]);
+                count_themen++;
+            } while (cursor.moveToNext());
 
-        dbHelper.close();
-        themen = new String[count_themen];
-        //count_themen--;
-        do{
-            //Log.d(LOG_TAG, "count_themen0 = " + count_themen);
-            String a = themen0[count_themen-1];
-            themen[count_themen-1] = a;
-                    count_themen--;
-           // Log.d(LOG_TAG, "themen = " + themen[count_themen]);
+            dbHelper.close();
+            themen = new String[count_themen];
+            //count_themen--;
+            do {
+                //Log.d(LOG_TAG, "count_themen0 = " + count_themen);
+                String a = themen0[count_themen - 1];
+                themen[count_themen - 1] = a;
+                count_themen--;
+                // Log.d(LOG_TAG, "themen = " + themen[count_themen]);
 
-        } while (count_themen > 0);
+            } while (count_themen > 0);
+
+        } catch (Exception $e) {
+            // Ничего не делаем
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "неисправна База Данных", Toast.LENGTH_SHORT);
+            toast.show();
+            Log.d(LOG_TAG, "===============Exeption==============");
+        }
+
 
         // Настраиваем адаптер
         //ArrayAdapter<?> adapter = ArrayAdapter.createFromResource(this, R.array.lessons, android.R.layout.simple_spinner_item);
@@ -224,8 +236,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 LinearLayout linear = (LinearLayout) findViewById(R.id.linear1);
                 allEds.clear();
                 linear.removeAllViews();
-                Processing();
-
+                try {
+                    Processing();
+                }catch (Exception $e) {
+                    // Ничего не делаем
+                    Log.d(LOG_TAG, "===============Exeption2==============");
+                }
                // Toast toast = Toast.makeText(getApplicationContext(),
                //         "Ваш выбор: " + my_lesson, Toast.LENGTH_SHORT);
                // toast.show();
@@ -267,14 +283,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    void Processing(){
+    void Processing() {
 
-     //   Context ctx = (Context)Fragment1.this.getActivity();
+        //   Context ctx = (Context)Fragment1.this.getActivity();
         Log.d(LOG_TAG, " == processing == ");
-    //    dbHelper = new dbHelper(ctx);
+        //    dbHelper = new dbHelper(ctx);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         String allData[] = new String[5];
-        count=0;
+        count = 0;
         /*
         Cursor cursor2 = database.query("anfangtable",
                 null,
@@ -286,35 +302,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //    Log.d(LOG_TAG, "---cursor2---");
 
          */
-        Cursor cursor2 = database.query(
-                "anfangtable",
-                null,
-                "lesson = ?",
-                new String[] {thema},
-                null,
-                null,
-                null);
+
+
+            Cursor cursor2 = database.query(
+                    "anfangtable",
+                    null,
+                    "lesson = ?",
+                    new String[]{thema},
+                    null,
+                    null,
+                    null);
 //               new String[] {String.valueOf(my_lesson)},
-        cursor2.moveToFirst();
-        do{
-            int deutschtextIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_DEUTSCHTEXT);
-            int ourtextIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_OURTEXT);
-            int idIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_ID);
-            int colorIndex = cursor2.getColumnIndex(DBHelper.KEY_DEUTSCHSOUND);
-            //    allData[0]= "0";
-        //    allData[2]= "2";
-        //    allData[1]= "1";
-            allData[0]= cursor2.getString(deutschtextIndex);
-            allData[2]= cursor2.getString(ourtextIndex);
-            allData[1]= cursor2.getString(idIndex);
-            allData[3]= String.valueOf(count);
-            allData[4]= cursor2.getString(colorIndex);
-            createfield(allData);
-            count++;
-        } while (cursor2.moveToNext());
-        Log.d(LOG_TAG, "allData[4] = " + allData[4]);
-        dbHelper.close();
-    }
+            cursor2.moveToFirst();
+            do {
+                int deutschtextIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_DEUTSCHTEXT);
+                int ourtextIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_OURTEXT);
+                int idIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_ID);
+                int colorIndex = cursor2.getColumnIndex(DBHelper.KEY_DEUTSCHSOUND);
+                //    allData[0]= "0";
+                //    allData[2]= "2";
+                //    allData[1]= "1";
+                allData[0] = cursor2.getString(deutschtextIndex);
+                allData[2] = cursor2.getString(ourtextIndex);
+                allData[1] = cursor2.getString(idIndex);
+                allData[3] = String.valueOf(count);
+                allData[4] = cursor2.getString(colorIndex);
+                createfield(allData);
+                count++;
+            } while (cursor2.moveToNext());
+            Log.d(LOG_TAG, "allData[4] = " + allData[4]);
+            dbHelper.close();
+        }
+
+
 
 
     @SuppressLint("ResourceAsColor")
@@ -500,60 +520,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
     }
-/*
-    @Override
-    public void onCompletion(MediaPlayer MP) {
-        Log.d(LOG_TAG,"====Player stopped====");
-
-        //Counter for play translate
-        if(counter < 4) {
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (playenable) playStart(filename_satz + ".mp3");
-                }
-            }, duration+500);
-            counter++;
-
-            //Counter2 for spring to next row
-            if(counter2 >= 3){
-                rowint++;
-                counter2 = 0;
-                getFileName(rowint);
-            }
-        } else {
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (playenable) playStart(filename_translate + ".mp3");
-                }
-            }, duration+500);
-            counter = 0;
-            counter2 ++;
-        }
-    }
-*/
 
     private void playStop() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
         }
     }
-/*
-    private void playStart() {
-        try {
-            releasePlayer();
-            mediaPlayer = new MediaPlayer();
-            mediaPlayer.setDataSource(fileName);
-            mediaPlayer.prepare();
-            mediaPlayer.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-*/
+
     private void recordStop() {
         if (mediaRecorder != null) {
             mediaRecorder.stop();
@@ -691,7 +664,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             Log.d(LOG_TAG, "readFromFile = " + readFromFile);
             //Toast.makeText(NewActivity.this, readFromFile, Toast.LENGTH_LONG).show();
-            ParseFile(readFromFile);
+            try {
+                ParseFile(readFromFile);
+            }catch (Exception $e) {
+                // Ничего не делаем
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "неправильный файл satz_database.txt", Toast.LENGTH_SHORT);
+                toast.show();
+                Log.d(LOG_TAG, "===============Exeption3==============");
+            }
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -728,7 +709,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             Log.d(LOG_TAG, "readFromFile = " + readFromFile);
             Toast.makeText(MainActivity.this, "readFromFile!", Toast.LENGTH_LONG).show();
+
+            try{
             ParseFile(readFromFile);
+            }catch (Exception $e) {
+                // Ничего не делаем
+                Log.d(LOG_TAG, "===============Exeption4==============");
+            }
+
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -745,19 +733,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ContentValues contentValues = new ContentValues();
 
 
-        //    Toast.makeText(MainActivity.this, inputMassage, Toast.LENGTH_LONG).show();
-        //Log.d(LOG_TAG, "input Processing Massage1: "+ inputMassage);
-        //   if (!inputMassage.matches("\\{\\{.*\\}\\}")) {}
-        // if (!inputMassage.matches("\\[(\\[\"-?\\d{10}\",\"-?\\d\\d?\\d?\\.\\d\",\"-?\\d\\d?\\d?\\.\\d\",\"-?\\d\\d?\\d?\\.\\d\",\"-?\\d\\d?\\d?\\.\\d\",\"-?\\d\\d?\\d?\\.\\d\",\"-?\\d\\d?\\d?\\.\\d\",\"-?\\d\\d?\\d?\\.\\d\",\"-?\\d\\d?\\d?\\.\\d\"\\],?)+\\]")) { }
-
-        //  if (str.matches("[0-9A-Fa-f]{2}[-:][0-9A-Fa-f]{2}[-:][0-9A-Fa-f]{2}[-:][0-9A-Fa-f]{2}[-:][0-9A-Fa-f]{2}[-:][0-9A-Fa-f]{2}.*")) {}
-        //inputMassage = inputMassage.trim().replaceAll(" +", " ");
 
         //     if (inputMassage.matches("(.*;.*;.*;.*;.*&)")) { //\u0009
         if (inputMassage.matches("(.*\\u0009.*\\u0009.*\\u0009.*\\u0009.*\\u0009.*&)")) {
             inputMassage = inputMassage.trim().replaceAll(" +", " ");
             Log.d(LOG_TAG,"begin");
-            String line[] = inputMassage.split("&");  // зазделяем по записи "&"
+            String line[] = inputMassage.split("&");  // разделяем по записи "&"
             int count=0;
 
             database.delete(TABLE_NAME,null,null);
@@ -813,9 +794,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //Counter2 for spring to next row
             if(counter2 >= counter2max){
-                ((Button) allEds.get(numint).findViewById(R.id.button_go)).setTextColor(Color.BLACK);
-                rowint++;
-                numint++;
+                if(numint < allEds.size()) {
+                    ((Button) allEds.get(numint).findViewById(R.id.button_go)).setTextColor(Color.BLACK);
+                    rowint++;
+                    numint++;
+                }
                 if(numint < allEds.size()) {
                     ((Button) allEds.get(numint).findViewById(R.id.button_go)).setTextColor(Color.WHITE);
                 }
@@ -850,15 +833,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (cursor.moveToFirst()) {
             index_id = cursor.getColumnIndex(DBHelper.KEY_ID);
-        /*    index_lesson = cursor.getColumnIndex(DBHelper.KEY_LESSON);
-            index_ourtext = cursor.getColumnIndex(DBHelper.KEY_OURTEXT);
-            index_deutschtext = cursor.getColumnIndex(DBHelper.KEY_DEUTSCHTEXT);
-            index_oursound = cursor.getColumnIndex(DBHelper.KEY_OURSOUND);
-            index_deutschsound = cursor.getColumnIndex(DBHelper.KEY_DEUTSCHSOUND);
-
-
-         */
-
 
             index = cursor.getInt(index_id);
             Log.d(LOG_TAG,"///////////////////////////////////////////");
