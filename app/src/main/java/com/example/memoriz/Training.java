@@ -1,9 +1,5 @@
 package com.example.memoriz;
 
-
-//import static com.example.memoriz.MainActivity.BROADCAST_ACTION_CONTROL;
-//import static com.example.memory.MainActivity.MESSAGEOUTPUTCONTROL;
-
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,7 +8,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
-import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -28,24 +23,10 @@ import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-
 import java.security.SecureRandom;
 
 public class Training extends Activity implements OnCompletionListener {
-    String fragment;
-    String netchoice="3";
-    String hostIP;
-    String port_srv;
-    int intport_srv;
-    String sending_command;
-    String password;
 
-    String ipaddress;
-    String macaddress="1122.3344.5566";
-    String factory="amx";
-    String name="panel";
-    String username;
-    String pinganswer;
     String row;
     String satz;
     String translate;
@@ -62,8 +43,6 @@ public class Training extends Activity implements OnCompletionListener {
     String ourtext;
     String rating;
     int duration;
-    int my_lesson;
-    int index_lesson;
     int timepause1;
     int timepause2;
     int themaposition;
@@ -71,39 +50,30 @@ public class Training extends Activity implements OnCompletionListener {
     boolean stop;
 
     DBHelper dbHelper;
-
-//    BroadcastReceiver br;
     Context ctx;
 
     private static final String LOG_TAG = "===Training===" ;
 
-    MediaRecorder mediaRecorder;
     MediaPlayer mediaPlayer;
-
-    //  private MediaPlayer mediaPlayer;
     private String path;
     Boolean button_player_d_is_played = false;
     Boolean button_player_r_is_played = false;
     Boolean button_recorder_d_is_record = false;
     Boolean button_recorder_r_is_record = false;
-    Boolean player_is_played = false;
-    Boolean recorder_is_record = false;
     Boolean autoplayenable = false;
     Boolean text_is_play = false;
     Boolean play_1_enable = false;
     Boolean repeat_enable = false;
 
-    Button button_record_d;
-    Button button_record_r;
-    Button button_player_d;
-    Button button_player_r;
     ProgressBar ProgressBar;
     RadioButton radioButton1;
     RadioButton radioButton2;
     RadioButton radioButton3;
     Switch switch1;
+    Switch switch2;
     Button button_play_1;
     Button button_repeat;
+    Button button_auto;
     RatingBar ratingBar;
     Cursor cursor3 = null;
     TextView text;
@@ -137,9 +107,6 @@ public class Training extends Activity implements OnCompletionListener {
 
         Log.d(LOG_TAG, "themax  = "+themax);
         Log.d(LOG_TAG, "themaposition  = "+themaposition);
-        //    Log.d(LOG_TAG, "satz  = "+satz);
-    //    Log.d(LOG_TAG, "filename_satz  = "+filename_satz);
-    //    Log.d(LOG_TAG, "translate = "+translate);
 
         setContentView(R.layout.training);
 
@@ -152,9 +119,12 @@ public class Training extends Activity implements OnCompletionListener {
         radioButton3 = findViewById(R.id.radioButton3);
         ratingBar = findViewById(R.id.ratingBar);
         switch1 = findViewById(R.id.switch1);
+        switch2 = findViewById(R.id.switch2);
 
         text = (TextView) findViewById(R.id.editText);
         text2 = (TextView) findViewById(R.id.editText2);
+        button_auto = (Button) findViewById(R.id.button_auto);
+
 
         // Получаем список тем
         int count_themen=0;
@@ -170,16 +140,14 @@ public class Training extends Activity implements OnCompletionListener {
                 "Lesson",
                 null,
                 "_id");
-//               new String[] {String.valueOf(my_lesson)},
+
         cursor.moveToFirst();
         do{
             int themaIndex = cursor.getColumnIndex(DBHelper.KEY_LESSON);
             themen0[count_themen]= cursor.getString(themaIndex);
-            //Log.d(LOG_TAG, "themen0 = " + themen0[count_themen]);
             count_themen++;
         } while (cursor.moveToNext());
 
-        //dbHelper.close();
         themen = new String[count_themen];
         //count_themen--;
         do{
@@ -187,14 +155,11 @@ public class Training extends Activity implements OnCompletionListener {
             Current_theme = themen0[count_themen-1];
             themen[count_themen-1] = Current_theme;
             count_themen--;
-            // Log.d(LOG_TAG, "themen = " + themen[count_themen]);
 
         } while (count_themen > 0);
 
         // Настраиваем адаптер
-        //ArrayAdapter<?> adapter = ArrayAdapter.createFromResource(this, R.array.lessons, android.R.layout.simple_spinner_item);
         ArrayAdapter<?> adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, themen);
-
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
        // Вызываем адаптер
         spinner.setAdapter(adapter);
@@ -204,25 +169,15 @@ public class Training extends Activity implements OnCompletionListener {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
 
                 counter=-1;
-                //String[] choose = getResources().getStringArray(R.array.lessons);
-                //  String[] choose = themen;
-
-               // selectedItemPosition = 2;
-
-
 
                 try {
                     //   thema = choose[selectedItemPosition];
                     thema = themen[selectedItemPosition];
-         //           thema=themax;
-                    //    my_lesson = Integer.parseInt(choose[selectedItemPosition]);
-                    //    my_lesson = Integer.parseInt(themen[selectedItemPosition]);
 
                 } catch (NumberFormatException nfe) {
                     System.out.println("Could not parse " + nfe);
                 }
 
-                //===
                 //======================================================================
                 //  выбираем данные выбранного урока
                 //======================================================================
@@ -242,7 +197,7 @@ public class Training extends Activity implements OnCompletionListener {
                         null,
                         null,
                         null);
-//               new String[] {String.valueOf(my_lesson)},
+
                 cursor3.moveToFirst();
                 do{
                     int deutschtextIndex = cursor3.getColumnIndex(com.example.memoriz.DBHelper.KEY_DEUTSCHTEXT);
@@ -258,34 +213,20 @@ public class Training extends Activity implements OnCompletionListener {
                     training_data [count] [0] = allData[0];
                     training_data [count] [1] = allData[2];
                     training_data [count] [2] = allData[4];
-                //    Log.d(LOG_TAG, "Rating = " + allData[4]);
 
                     count++;
                 } while (cursor3.moveToNext());
                 Log.d(LOG_TAG, "count = " + count);
                 dbHelper.close();
 
-
-
-
                 //======================================================================
-
-
             }
                 @Override
                 public void onNothingSelected (AdapterView < ? > adapterView){
-
             }
         });
 
-
-
-        rollgasse();
-
-//=================================
-
         button_play_1 = (Button) findViewById(R.id.button_play_1);
-        //  button_vorwarts.setText(R.string.button_vorwarts);
         button_play_1.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -305,16 +246,11 @@ public class Training extends Activity implements OnCompletionListener {
                 }
                 if(play_1_enable && ! deutschtext.isEmpty()) {
                     running_play_1();
-
-
                 }
             }
-
-
         });
 
         button_repeat = (Button) findViewById(R.id.button_play_10);
-        //  button_vorwarts.setText(R.string.button_vorwarts);
         button_repeat.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -325,6 +261,12 @@ public class Training extends Activity implements OnCompletionListener {
                     stop = true;
                     button_repeat.setText("repeat");
                 }else{
+                    if(autoplayenable){
+                        autoplayenable = false;
+                        button_auto.setText("run");
+                        playStop();
+                        releasePlayer();
+                    }
                     if(! deutschtext.isEmpty()){
                         repeat_enable = true;
                         button_repeat.setText("stop");
@@ -339,16 +281,10 @@ public class Training extends Activity implements OnCompletionListener {
                     running_play_1();
                 }
             }
-
-
         });
-
 //=================================================================================================
 
-
-
         Button button_ruckwarts = (Button) findViewById(R.id.button_ruck);
-      //  button_vorwarts.setText(R.string.button_vorwarts);
         button_ruckwarts.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -364,9 +300,6 @@ public class Training extends Activity implements OnCompletionListener {
                     counter = random.nextInt(count);
                 }
 
-
-
-
                 deutschtext = training_data [counter] [0];
                 ourtext = training_data [counter] [1];
                 rating =  training_data [counter] [2];
@@ -375,14 +308,11 @@ public class Training extends Activity implements OnCompletionListener {
                 Log.d(LOG_TAG, "ourtext = "+ ourtext);
                 Log.d(LOG_TAG, "Rating = "+ rating);
 
-
                 if(switch1.isChecked()) {
                     text.setText(deutschtext);
                 }else{
                     text.setText(". . .");
                 }
-
-  //              final TextView text2 = (TextView) findViewById(R.id.editText2);
                 if(switch1.isChecked()) {
                     text2.setText(". . .");
                 }else{
@@ -393,15 +323,12 @@ public class Training extends Activity implements OnCompletionListener {
                 ratingBar.setRating(Float.parseFloat(rating));
 
 
-            //    playStart(deutschtext+".mp3");
-
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
 
-                        if(!stop){
-  //                      final TextView text = (TextView) findViewById(R.id.editText);
+                        if(!stop&&!switch2.isChecked()){
                         if (switch1.isChecked()) {
                             text2.setText(ourtext);
                         } else {
@@ -421,8 +348,6 @@ public class Training extends Activity implements OnCompletionListener {
             }
         });
 
-        Button button_auto = (Button) findViewById(R.id.button_auto);
-        //  button_vorwarts.setText(R.string.button_vorwarts);
         button_auto.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -435,23 +360,21 @@ public class Training extends Activity implements OnCompletionListener {
                 playStop();
                 releasePlayer();
             }else{
+                if(repeat_enable){
+                    repeat_enable = false;
+                    button_repeat.setText("repeat");
+                }
                 stop = false;
                 autoplayenable = true;
                 button_auto.setText("stop");
             }
-
                 if(autoplayenable) {
                     running_auto();
                 }
-
             }
-
-
         });
 
-
         Button button_vorwarts = (Button) findViewById(R.id.button_vor);
-        //  button_vorwarts.setText(R.string.button_vorwarts);
         button_vorwarts.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -475,14 +398,12 @@ public class Training extends Activity implements OnCompletionListener {
                 Log.d(LOG_TAG, "ourtext = "+ ourtext);
                 Log.d(LOG_TAG, "Rating = "+ rating);
 
-   //             final TextView text = (TextView) findViewById(R.id.editText);
                 if(switch1.isChecked()) {
                     text.setText(deutschtext);
                 }else{
                     text.setText(". . .");
                 }
 
-   //             final TextView text2 = (TextView) findViewById(R.id.editText2);
                 if(switch1.isChecked()) {
                     text2.setText(". . .");
                 }else{
@@ -491,15 +412,11 @@ public class Training extends Activity implements OnCompletionListener {
 
                 ratingBar.setRating(Float.parseFloat(rating));
 
-
-                //    playStart(deutschtext+".mp3");
-
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (!stop){
-   //                         final TextView text = (TextView) findViewById(R.id.editText);
+                        if (!stop&&!switch2.isChecked()){
                         if (switch1.isChecked()) {
                             text2.setText(ourtext);
                         } else {
@@ -576,7 +493,7 @@ public class Training extends Activity implements OnCompletionListener {
                                    null,
                                    null,
                                    null);
-//               new String[] {String.valueOf(my_lesson)},
+
                            cursor3.moveToFirst();
                            do{
                                int deutschtextIndex = cursor3.getColumnIndex(com.example.memoriz.DBHelper.KEY_DEUTSCHTEXT);
@@ -599,13 +516,8 @@ public class Training extends Activity implements OnCompletionListener {
                            Log.d(LOG_TAG, "count = " + count);
                            dbHelper.close();
                            //======================================================================
-
                 }
-
             }
-         //================
-
-
         });
     }
 
@@ -615,17 +527,6 @@ public class Training extends Activity implements OnCompletionListener {
         playStart(filename_satz + ".mp3");
 
     }
-
-
-    private void rollgasse() {
-
-
-        //   Context ctx = (Context)Fragment1.this.getActivity();
-        Log.d(LOG_TAG, " == processing == ");
-        //    dbHelper = new dbHelper(ctx);
-
-    }
-
 
     public void onCompletion(MediaPlayer mediaPlayer) {
         Log.d(LOG_TAG, "onCompletion");
@@ -742,13 +643,14 @@ public class Training extends Activity implements OnCompletionListener {
 
         }
 
+        if(switch2.isChecked()){
+            timepause1 = 20000;
+        }
             Log.d(LOG_TAG, "count................. = "+ count);
             Log.d(LOG_TAG, "counter................. = "+ counter);
             Log.d(LOG_TAG, "deutschtext = "+ deutschtext);
             Log.d(LOG_TAG, "ourtext = "+ ourtext);
             Log.d(LOG_TAG, "Rating = "+ rating);
-
-  //      final TextView text = (TextView) findViewById(R.id.editText);
 
             if(radioButton3.isChecked()){
                 if(revers) {
@@ -764,9 +666,6 @@ public class Training extends Activity implements OnCompletionListener {
                 }
             }
 
-
-
-  //      final TextView text2 = (TextView) findViewById(R.id.editText2);
             if(radioButton3.isChecked()){
                 if(revers) {
                     text2.setText(". . .");
@@ -806,9 +705,6 @@ public class Training extends Activity implements OnCompletionListener {
 
                 if(!stop){
 
-  //              final TextView text = (TextView) findViewById(R.id.editText);
-  //              final TextView text2 = (TextView) findViewById(R.id.editText2);
-
                 if (radioButton3.isChecked()) {
                     if (revers) {
                         text2.setText(ourtext);
@@ -822,7 +718,6 @@ public class Training extends Activity implements OnCompletionListener {
                         text.setText(deutschtext);
                     }
                 }
-
 
                 text_is_play = true;
                 if (radioButton3.isChecked()) {
@@ -857,10 +752,5 @@ public class Training extends Activity implements OnCompletionListener {
         releasePlayer();
       //  handler.removeCallbacks(myRunnable);
 
-    }
-    @Override
-    protected void onStop(){
-        super.onStop();
-        Log.d(LOG_TAG, "onStop");
     }
 }

@@ -57,7 +57,7 @@
             android:ems="3"
             android:textAlignment="center"
             android:textColor="@color/y"
-            android:textSize="@dimen/dimentiontext2"></EditText>
+            android:textSize="@dimen/dimentiontext"></EditText>
 
 
         <TextView
@@ -104,19 +104,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:orientation="vertical">
+
         <Switch
             android:id="@+id/switch1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/title"
-            android:text="REV" />
+            android:text="REV"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/title" />
+
+        <Switch
+            android:id="@+id/switch2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20S"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/title" />
+
+        </LinearLayout>
 
 
         <Button
             android:id="@+id/button_auto"
             android:layout_width="300px"
             android:layout_height="60dp"
-            android:layout_marginLeft="41dp"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="0dp"
             android:layout_marginRight="12dp"
             android:background="@drawable/draw_button"
@@ -133,7 +150,6 @@
             android:background="@drawable/draw_button"
             android:text="@string/play_10"
             android:textColor="@color/title"></Button>
-
 
 
     </LinearLayout>

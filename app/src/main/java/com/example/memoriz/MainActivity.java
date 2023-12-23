@@ -7,8 +7,11 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -619,17 +622,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.update:
                 Toast.makeText(this, "update Clicked", Toast.LENGTH_SHORT).show();
-                //    Intent intent = new Intent(this, NewActivity.class);
-                //    startActivity(intent);
                 read_file_from_SD();
                 break;
             case R.id.about:
-                Toast.makeText(this, "about Clicked", Toast.LENGTH_SHORT).show();
-              //  read_file_from_SD_2();
+                сreateDialog(this);
                 break;
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -895,6 +893,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 //==========================================================================================
 
+    }
+
+    public void сreateDialog(Activity activity) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setView(R.layout.about);
+        builder.create().show();
     }
 
 }
