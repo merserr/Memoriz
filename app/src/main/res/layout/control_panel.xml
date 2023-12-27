@@ -16,9 +16,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="10dp"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title_lesson"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text=""
+            android:textAlignment="center"
+            android:textColor="@color/title"
+            android:textSize="@dimen/dimentionIP" />
 
         <TextView
             android:id="@+id/title_satz"
@@ -33,41 +43,40 @@
         <EditText
             android:id="@+id/editText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="120dp"
             android:layout_marginTop="0dp"
             android:ems="3"
             android:textAlignment="center"
             android:textColor="@color/y"
             android:textSize="@dimen/dimentionIP"></EditText>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="15dp"
-        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/button_record_d"
-            android:layout_width="140dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="30dp"
-            android:textColor="@color/title"
-            android:background="@drawable/draw_button"
-            android:text="@string/button_record_d" >
-        </Button>
-        <Button
-            android:id="@+id/button_player_d"
-            android:layout_width="140dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:textColor="@color/title"
-            android:background="@drawable/draw_button"
-            android:text="@string/button_player_d" >
-        </Button>
+            <Button
+                android:id="@+id/button_record_d"
+                android:layout_width="140dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/draw_button"
+                android:text="@string/button_record_d"
+                android:textColor="@color/title"></Button>
+
+            <Button
+                android:id="@+id/button_player_d"
+                android:layout_width="140dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/draw_button"
+                android:text="@string/button_player_d"
+                android:textColor="@color/title"></Button>
 
         </LinearLayout>
 
@@ -84,7 +93,7 @@
         <EditText
             android:id="@+id/editText2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="120dp"
             android:layout_marginTop="0dp"
             android:ems="3"
             android:textAlignment="center"
@@ -101,51 +110,55 @@
                 android:id="@+id/button_record_r"
                 android:layout_width="140dp"
                 android:layout_height="60dp"
-                android:layout_marginTop="0dp"
                 android:layout_marginLeft="10dp"
+                android:layout_marginTop="0dp"
                 android:layout_marginRight="30dp"
-                android:textColor="@color/title"
                 android:background="@drawable/draw_button"
-                android:text="@string/button_record_r" >
-            </Button>
+                android:text="@string/button_record_r"
+                android:textColor="@color/title"></Button>
+
             <Button
                 android:id="@+id/button_player_r"
                 android:layout_width="140dp"
                 android:layout_height="60dp"
-                android:layout_marginTop="0dp"
                 android:layout_marginLeft="30dp"
+                android:layout_marginTop="0dp"
                 android:layout_marginRight="30dp"
-                android:textColor="@color/title"
                 android:background="@drawable/draw_button"
-                android:text="@string/button_player_r" >
-            </Button>
+                android:text="@string/button_player_r"
+                android:textColor="@color/title"></Button>
 
         </LinearLayout>
 
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="70dp"
+        android:orientation="horizontal">
 
 
         <Button
             android:id="@+id/button_save"
-            android:layout_width="match_parent"
+            android:layout_width="140dp"
             android:layout_height="60dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="80dp"
-            android:layout_marginRight="40dp"
-            android:text="@string/save_string"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="30dp"
             android:background="@drawable/draw_button"
+            android:text="@string/save_string"
             android:textColor="@color/title"></Button>
 
         <Button
-            android:id="@+id/button_delete"
-            android:layout_width="match_parent"
+            android:id="@+id/button_next"
+            android:layout_width="140dp"
             android:layout_height="60dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="40dp"
-            android:text="@string/delete_string"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="30dp"
             android:background="@drawable/draw_button"
+            android:text="@string/next_string"
             android:textColor="@color/title"></Button>
+    </LinearLayout>
 
     </LinearLayout>
 

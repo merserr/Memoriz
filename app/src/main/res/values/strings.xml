@@ -68,6 +68,7 @@
     <string name="titlesatz2">Wort</string>
     <string name="titlewort_ru">слово</string>
     <string name="about2">Для работы программы в папку Podkast/Memory необходимо поместить файл satz_database.txt и затем сделать Update</string>
+    <string name="next_string">next</string>
 
 
     <string-array name="lessons">

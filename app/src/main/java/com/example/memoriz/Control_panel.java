@@ -8,9 +8,8 @@ import android.app.Activity;
 //import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -38,13 +37,17 @@ public class Control_panel extends Activity implements OnCompletionListener {
     String macaddress="1122.3344.5566";
     String factory="amx";
     String name="panel";
-    String username;
-    String pinganswer;
+    String num;
+    int numint;
+    String thema;
     String row;
+    int rowint;
     String satz;
     String translate;
     String filename_satz;
     String filename_translate;
+    String fileNameDeutschText;
+    String fileNameOurText;
 
     DBHelper dbHelper;
 
@@ -71,6 +74,9 @@ public class Control_panel extends Activity implements OnCompletionListener {
     Button button_player_d;
     Button button_player_r;
 
+    TextView text;
+    TextView text2;
+    TextView title_lesson;
 
     public void onCreate(Bundle savedInstanceState) {
 
@@ -111,44 +117,34 @@ public class Control_panel extends Activity implements OnCompletionListener {
 
         dbHelper = new DBHelper(this);
 
-        row= getIntent().getStringExtra("row");
+        thema = getIntent().getStringExtra("thema");
+        num = getIntent().getStringExtra("num");
+        numint = Integer.parseInt(num);
+        row = getIntent().getStringExtra("row");
+        rowint = Integer.parseInt(row);
         satz = getIntent().getStringExtra("satz");
         translate = getIntent().getStringExtra("translate");
         filename_satz = satz.trim().replaceAll("\\p{Punct}","_");
         filename_translate = translate.trim().replaceAll("\\p{Punct}","_");
 
+        Log.d(LOG_TAG, "thema  = "+thema);
+        Log.d(LOG_TAG, "num  = "+num);
         Log.d(LOG_TAG, "row  = "+row);
         Log.d(LOG_TAG, "satz  = "+satz);
         Log.d(LOG_TAG, "filename_satz  = "+filename_satz);
         Log.d(LOG_TAG, "translate = "+translate);
 
-/*
-        fragment = getIntent().getStringExtra("fragment");
-        netchoice = getIntent().getStringExtra("netchoice");
-        hostIP = getIntent().getStringExtra("ipaddress_srv");
-        port_srv = getIntent().getStringExtra("port_srv");
-        username = getIntent().getStringExtra("username");
-        password = getIntent().getStringExtra("password");
-        ipaddress = getIntent().getStringExtra("ipaddress");
-        macaddress = getIntent().getStringExtra("macaddress");
-        factory = getIntent().getStringExtra("factory");
-        name = getIntent().getStringExtra("name");
-        age = "age = " + getIntent().getStringExtra("age") + " min";
-
-        try {
-            intport_srv = Integer.parseInt(port_srv);
-        } catch (NumberFormatException nfe) {
-            nfe.printStackTrace();
-        }
-*/
         setContentView(R.layout.control_panel);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        final TextView text = (TextView) findViewById(R.id.editText);
+        title_lesson  = (TextView) findViewById(R.id.title_lesson);
+        title_lesson.setText(thema);
+
+        text = (TextView) findViewById(R.id.editText);
         text.setText(satz);
 
-        final TextView text2 = (TextView) findViewById(R.id.editText2);
+        text2 = (TextView) findViewById(R.id.editText2);
         text2.setText(translate);
 
 
@@ -236,18 +232,47 @@ public class Control_panel extends Activity implements OnCompletionListener {
             }
         }); //database.delete("satz", "id = " + id, null);
 
-        Button button_delete = (Button) findViewById(R.id.button_delete);
-        //  button_save.setText(R.string.button_save);
-        button_delete.setOnClickListener(new OnClickListener() {
+        Button button_next = (Button) findViewById(R.id.button_next);
+        button_next.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(LOG_TAG, "onClick button_delete ");
-                SQLiteDatabase database = dbHelper.getWritableDatabase();
-                ContentValues contentValues = new ContentValues();
-                //               Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                //               vibrator.vibrate(70);
+                Log.d(LOG_TAG, "onClick button_next ");
+                //SQLiteDatabase database = dbHelper.getWritableDatabase();
+                //ContentValues contentValues = new ContentValues();
+                //database.delete("satz", "_id = " + row, null);
 
-                database.delete("satz", "_id = " + row, null);
+                rowint++;
+                Log.d(LOG_TAG, "rowint = " + rowint);
+
+                SQLiteDatabase database = dbHelper.getWritableDatabase();
+                String rows = Integer.toString(rowint);
+                Cursor cursor = database.query(
+                        "anfangtable",
+                        null,
+                        "_id = ?",
+                        new String[] {rows},
+                        null,
+                        null,
+                        null);
+                if (cursor.moveToFirst()) {
+                    int fileNameDeutschTextIndex_int = cursor.getColumnIndex(com.example.memoriz.DBHelper.KEY_DEUTSCHTEXT);
+                    int fileNameOurTextIndex_int = cursor.getColumnIndex(com.example.memoriz.DBHelper.KEY_OURTEXT);
+                    int themaIndex = cursor.getColumnIndex(DBHelper.KEY_LESSON);
+                    thema = cursor.getString(themaIndex);
+                    fileNameDeutschText = cursor.getString(fileNameDeutschTextIndex_int);
+                    fileNameOurText = cursor.getString(fileNameOurTextIndex_int);
+
+                    title_lesson.setText(thema);
+                    text.setText(fileNameDeutschText);
+                    text2.setText(fileNameOurText);
+
+                    filename_satz = fileNameDeutschText.trim().replaceAll("\\p{Punct}","_");
+                    filename_translate = fileNameOurText.trim().replaceAll("\\p{Punct}","_");
+                    //Log.d(LOG_TAG, "===fileNameDeutschText=== = " + fileNameDeutschText);
+                }
+                dbHelper.close();
+
+
             }
         }); //
 

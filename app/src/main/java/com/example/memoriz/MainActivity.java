@@ -263,14 +263,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View view) {
                 Log.d(LOG_TAG, "button_Training");
-        //        allEds.clear();
-        //        linear.removeAllViews();
-        //        Processing();
-
-            //    row = ((TextView)view.findViewWithTag("id3")).getText().toString();
-            //    satz = ((TextView)view.findViewWithTag("id1")).getText().toString();
-            //    translate = ((TextView)view.findViewWithTag("id2")).getText().toString();
                 Log.d(LOG_TAG, "thema  = "+thema);
+
                 Intent intent = new Intent(MainActivity.this, Training.class);
                 intent.putExtra("thema", thema);
                 intent.putExtra("themaposition", themaposition);
@@ -422,11 +416,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 playStop();
                 playenable = false;
 
+                num = ((TextView)view.findViewWithTag("id5")).getText().toString();
                 row = ((TextView)view.findViewWithTag("id3")).getText().toString();
                 satz = ((TextView)view.findViewWithTag("id1")).getText().toString();
                 translate = ((TextView)view.findViewWithTag("id2")).getText().toString();
 
+
+                Log.d(LOG_TAG, "row = " + row);
+
                 Intent intent = new Intent(MainActivity.this, Control_panel.class);
+                intent.putExtra("thema", thema);
+                intent.putExtra("num", num);
                 intent.putExtra("row", row);
                 intent.putExtra("satz", satz);
                 intent.putExtra("translate", translate);
