@@ -242,7 +242,7 @@ public class Control_panel extends Activity implements OnCompletionListener {
                 //database.delete("satz", "_id = " + row, null);
 
                 rowint++;
-                Log.d(LOG_TAG, "rowint = " + rowint);
+                //Log.d(LOG_TAG, "rowint = " + rowint);
 
                 SQLiteDatabase database = dbHelper.getWritableDatabase();
                 String rows = Integer.toString(rowint);
