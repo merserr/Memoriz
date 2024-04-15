@@ -790,7 +790,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 public void run() {
                     if (playenable) playStart(filename_satz + ".mp3");
                 }
-            }, duration+1500);//пауза перед следующим повтором
+            }, duration+0);//пауза перед следующим повтором
             counter++;
 
             //Counter2 for spring to next row
@@ -813,7 +813,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 public void run() {
                     if (playenable) playStart(filename_translate + ".mp3");
                 }
-            }, duration+500);
+            }, duration+0);
             counter = 0;
 
             counter2 ++;
