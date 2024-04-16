@@ -9,10 +9,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+//import android.bluetooth.BluetoothManager;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.media.AudioManager;
@@ -69,6 +74,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     RadioButton radioButton5;
     RadioButton radioButton6;
 
+    private MusicIntentReceiver myReceiver;
+//    private bluetoothManager BluetoothManager;
+
     DBHelper dbHelper;
     private List<View> allEds;
 
@@ -76,27 +84,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String indexstr;
     int countermax;
     int counter2max;
-    String dataForSaving="";
+    String dataForSaving = "";
     private static final String LOG_TAG = "==MainActivity==";
-  //  private static final String FILENAME = "deutsch_database.txt";
- //   private static final String DIR_SD = "Download";
+    //  private static final String FILENAME = "deutsch_database.txt";
+    //   private static final String DIR_SD = "Download";
     private static final String FILENAME = "satz_database.txt";
     private static final String DIR_SD = "/Podcasts/Memory";
-    String readFromFile="";
+    String readFromFile = "";
     MediaPlayer mediaPlayer;
     private String path = "Podcasts/Memory/";
 
     AudioManager am;
     boolean isplay;
-    boolean presskeyenable=true;
+    boolean presskeyenable = true;
     boolean playenable;
     //   boolean nextplayenable;
     String workstroke1;
     String workstroke2;
     String name_sound_file_u;
-    String name_sound_file_d ="s";
+    String name_sound_file_d = "s";
     String thema;
-    String themen[]={"--- No Database ---", "second"};
+    String themen[] = {"--- No Database ---", "second"};
 
     int totalcount;
     int index_id;
@@ -110,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int themaposition;
 
     String satz;
-    String translate ="1122.3344.5566";
+    String translate = "1122.3344.5566";
     String row;
     int rowint;
     String num;
@@ -143,8 +151,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //     fileName = Environment.getExternalStorageDirectory() + "/record.3gpp";
         fileName = Environment.getExternalStorageDirectory() + "/Memory/record.mp3";
         File rootPath = new File(Environment.getExternalStorageDirectory(), "Memory");
-        if(!rootPath.exists()) {
-            Toast toast = Toast.makeText(getApplicationContext(),"Create Direktory ", Toast.LENGTH_SHORT);
+        if (!rootPath.exists()) {
+            Toast toast = Toast.makeText(getApplicationContext(), "Create Direktory ", Toast.LENGTH_SHORT);
             toast.show();
             rootPath.mkdirs();
         }
@@ -157,17 +165,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         radioButton5 = findViewById(R.id.radioButton5);
         radioButton6 = findViewById(R.id.radioButton6);
 
-
+        myReceiver = new MusicIntentReceiver();
 
         ProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         Spinner spinner = findViewById(R.id.spinner);
 
         //==========================================================================================
         // Получаем список тем
-        int count_themen=0;
+        int count_themen = 0;
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        String [] themen0 = new String[100];
+        String[] themen0 = new String[100];
 
         try {
 
@@ -224,46 +232,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
 
                 //String[] choose = getResources().getStringArray(R.array.lessons);
-              //  String[] choose = themen;
+                //  String[] choose = themen;
 
                 themaposition = selectedItemPosition;
 
                 try {
-                 //   thema = choose[selectedItemPosition];
+                    //   thema = choose[selectedItemPosition];
                     thema = themen[selectedItemPosition];
-                //    my_lesson = Integer.parseInt(choose[selectedItemPosition]);
+                    //    my_lesson = Integer.parseInt(choose[selectedItemPosition]);
                     my_lesson = Integer.parseInt(themen[selectedItemPosition]);
 
-                } catch(NumberFormatException nfe) {
+                } catch (NumberFormatException nfe) {
                     System.out.println("Could not parse " + nfe);
                 }
-           //     extractionID();
+                //     extractionID();
                 LinearLayout linear = (LinearLayout) findViewById(R.id.linear1);
                 allEds.clear();
                 linear.removeAllViews();
                 try {
                     Processing();
-                }catch (Exception $e) {
+                } catch (Exception $e) {
                     // Ничего не делаем
                     Log.d(LOG_TAG, "===============Exeption2==============");
                 }
-               // Toast toast = Toast.makeText(getApplicationContext(),
-               //         "Ваш выбор: " + my_lesson, Toast.LENGTH_SHORT);
-               // toast.show();
+                // Toast toast = Toast.makeText(getApplicationContext(),
+                //         "Ваш выбор: " + my_lesson, Toast.LENGTH_SHORT);
+                // toast.show();
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
-    //    allEds = new ArrayList<View>();
+        //    allEds = new ArrayList<View>();
 
-        Button button_training = (Button)findViewById(R.id.button_training);
+        Button button_training = (Button) findViewById(R.id.button_training);
         LinearLayout linear = (LinearLayout) findViewById(R.id.linear1);
         button_training.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(LOG_TAG, "button_Training");
-                Log.d(LOG_TAG, "thema  = "+thema);
+                Log.d(LOG_TAG, "thema  = " + thema);
 
                 Intent intent = new Intent(MainActivity.this, Training.class);
                 intent.putExtra("thema", thema);
@@ -274,13 +283,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //intent.setClass(ctx, Control_panel.class);
 
 
-
                 startActivity(intent);
 
 
             }
         });
+
+
     }
+
+
 
     void Processing() {
 
@@ -303,57 +315,62 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
          */
 
 
-            Cursor cursor2 = database.query(
-                    "anfangtable",
-                    null,
-                    "lesson = ?",
-                    new String[]{thema},
-                    null,
-                    null,
-                    null);
+        Cursor cursor2 = database.query(
+                "anfangtable",
+                null,
+                "lesson = ?",
+                new String[]{thema},
+                null,
+                null,
+                null);
 //               new String[] {String.valueOf(my_lesson)},
-            cursor2.moveToFirst();
-            do {
-                int deutschtextIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_DEUTSCHTEXT);
-                int ourtextIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_OURTEXT);
-                int idIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_ID);
-                int colorIndex = cursor2.getColumnIndex(DBHelper.KEY_DEUTSCHSOUND);
-                //    allData[0]= "0";
-                //    allData[2]= "2";
-                //    allData[1]= "1";
-                allData[0] = cursor2.getString(deutschtextIndex);
-                allData[2] = cursor2.getString(ourtextIndex);
-                allData[1] = cursor2.getString(idIndex);
-                allData[3] = String.valueOf(count);
-                allData[4] = cursor2.getString(colorIndex);
-                createfield(allData);
-                count++;
-            } while (cursor2.moveToNext());
-            Log.d(LOG_TAG, "allData[4] = " + allData[4]);
-            dbHelper.close();
-        }
-
-
+        cursor2.moveToFirst();
+        do {
+            int deutschtextIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_DEUTSCHTEXT);
+            int ourtextIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_OURTEXT);
+            int idIndex = cursor2.getColumnIndex(com.example.memoriz.DBHelper.KEY_ID);
+            int colorIndex = cursor2.getColumnIndex(DBHelper.KEY_DEUTSCHSOUND);
+            //    allData[0]= "0";
+            //    allData[2]= "2";
+            //    allData[1]= "1";
+            allData[0] = cursor2.getString(deutschtextIndex);
+            allData[2] = cursor2.getString(ourtextIndex);
+            allData[1] = cursor2.getString(idIndex);
+            allData[3] = String.valueOf(count);
+            allData[4] = cursor2.getString(colorIndex);
+            createfield(allData);
+            count++;
+        } while (cursor2.moveToNext());
+        Log.d(LOG_TAG, "allData[4] = " + allData[4]);
+        dbHelper.close();
+    }
 
 
     @SuppressLint("ResourceAsColor")
-    void createfield(String[] textfield){
-      //  Context ctx = (Context)Fragment1.this.getActivity();
+    void createfield(String[] textfield) {
+        //  Context ctx = (Context)Fragment1.this.getActivity();
         LinearLayout linear = (LinearLayout) findViewById(R.id.linear1);
         //берем наш кастомный лейаут находим через него все наши кнопки и едит тексты, задаем нужные данные
         final View view = getLayoutInflater().inflate(R.layout.custom_edittext_layout, null);
 
         TextView text = (TextView) view.findViewById(R.id.editText);
         text.setText(textfield[0]);
-        if(textfield[4].equals("1")){text.setTextColor(Color.GREEN);}
-        if(textfield[4].equals("2")){text.setTextColor(Color.YELLOW);}
-
+        if (textfield[4].equals("1")) {
+            text.setTextColor(Color.GREEN);
+        }
+        if (textfield[4].equals("2")) {
+            text.setTextColor(Color.YELLOW);
+        }
 
 
         TextView text2 = (TextView) view.findViewById(R.id.editText2);
         text2.setText(textfield[2]);
-        if(textfield[4].equals("1")){text2.setTextColor(Color.GRAY);}
-        if(textfield[4].equals("2")){text2.setTextColor(Color.GRAY);}
+        if (textfield[4].equals("1")) {
+            text2.setTextColor(Color.GRAY);
+        }
+        if (textfield[4].equals("2")) {
+            text2.setTextColor(Color.GRAY);
+        }
 
         Button buttongo = (Button) view.findViewById(R.id.button_go);
         buttongo.setText(textfield[1]);
@@ -369,34 +386,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 buttongo.setAlpha(0.7F);
 
 
-
-                if(!playenable) {
+                if (!playenable) {
                     playenable = true;
-                    satz = ((TextView)view.findViewWithTag("id1")).getText().toString();
-                    translate = ((TextView)view.findViewWithTag("id2")).getText().toString();
-                    row = ((TextView)view.findViewWithTag("id3")).getText().toString();
-                    num = ((TextView)view.findViewWithTag("id5")).getText().toString();
-                    try{
+                    satz = ((TextView) view.findViewWithTag("id1")).getText().toString();
+                    translate = ((TextView) view.findViewWithTag("id2")).getText().toString();
+                    row = ((TextView) view.findViewWithTag("id3")).getText().toString();
+                    num = ((TextView) view.findViewWithTag("id5")).getText().toString();
+                    try {
                         rowint = Integer.parseInt(row);
                         numint = Integer.parseInt(num);
-                    }
-                    catch (NumberFormatException ex){
+                    } catch (NumberFormatException ex) {
                         ex.printStackTrace();
                     }
-                    if(numint < allEds.size()) {
+                    if (numint < allEds.size()) {
                         ((Button) allEds.get(numint).findViewById(R.id.button_go)).setTextColor(Color.WHITE);
                     }
 
                     getFileName(rowint);
-                     counter = 0;
+                    counter = 0;
                     counter2 = 0;
 
-                    Log.d(LOG_TAG, "filename_satz:   "+filename_satz);
+                    Log.d(LOG_TAG, "filename_satz:   " + filename_satz);
 
-                    playStart(filename_satz+".mp3");
-                }
-                else{
-                    if(numint < allEds.size()) {
+                    playStart(filename_satz + ".mp3");
+                } else {
+                    if (numint < allEds.size()) {
                         ((Button) allEds.get(numint).findViewById(R.id.button_go)).setTextColor(Color.BLACK);
                     }
                     playStop();
@@ -410,16 +424,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public boolean onLongClick(View v) {
                 Log.d(LOG_TAG, "onLongClick: ");
 
-                if(numint < allEds.size()) {
+                if (numint < allEds.size()) {
                     ((Button) allEds.get(numint).findViewById(R.id.button_go)).setTextColor(Color.BLACK);
                 }
                 playStop();
                 playenable = false;
 
-                num = ((TextView)view.findViewWithTag("id5")).getText().toString();
-                row = ((TextView)view.findViewWithTag("id3")).getText().toString();
-                satz = ((TextView)view.findViewWithTag("id1")).getText().toString();
-                translate = ((TextView)view.findViewWithTag("id2")).getText().toString();
+                num = ((TextView) view.findViewWithTag("id5")).getText().toString();
+                row = ((TextView) view.findViewWithTag("id3")).getText().toString();
+                satz = ((TextView) view.findViewWithTag("id1")).getText().toString();
+                translate = ((TextView) view.findViewWithTag("id2")).getText().toString();
 
 
                 Log.d(LOG_TAG, "row = " + row);
@@ -431,7 +445,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent.putExtra("satz", satz);
                 intent.putExtra("translate", translate);
                 //intent.setClass(ctx, Control_panel.class);
-
 
 
                 startActivity(intent);
@@ -448,9 +461,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         linear.addView(view);
 
 
-
         //linear.getChildAt(1).findViewWithTag("id3").getBackground().setAlpha(1);
-       // Log.d(LOG_TAG, "linear.getChildCount(): "+linear.getChildCount());
+        // Log.d(LOG_TAG, "linear.getChildCount(): "+linear.getChildCount());
     }
 
     @Override
@@ -472,13 +484,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dbHelper.close();
 
 
-
     }
 
 
-    void getFileName(int rowint){
+    void getFileName(int rowint) {
         //Context ctx = (Context)Fragment1.this.getActivity();
-        Log.d(LOG_TAG, "rowint = "+ rowint);
+        Log.d(LOG_TAG, "rowint = " + rowint);
         //dbHelper = new dbHelper(ctx);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         String rows = Integer.toString(rowint);
@@ -486,7 +497,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 "anfangtable",
                 null,
                 "_id = ?",
-                new String[] {rows},
+                new String[]{rows},
                 null,
                 null,
                 null);
@@ -495,8 +506,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int fileNameOurTextIndex_int = cursor.getColumnIndex(com.example.memoriz.DBHelper.KEY_OURTEXT);
             fileNameDeutschText = cursor.getString(fileNameDeutschTextIndex_int);
             fileNameOurText = cursor.getString(fileNameOurTextIndex_int);
-            filename_satz = fileNameDeutschText.trim().replaceAll("\\p{Punct}","_");
-            filename_translate = fileNameOurText.trim().replaceAll("\\p{Punct}","_");
+            filename_satz = fileNameDeutschText.trim().replaceAll("\\p{Punct}", "_");
+            filename_translate = fileNameOurText.trim().replaceAll("\\p{Punct}", "_");
             //Log.d(LOG_TAG, "===fileNameDeutschText=== = " + fileNameDeutschText);
         }
         dbHelper.close();
@@ -508,16 +519,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             releasePlayer();
             mediaPlayer = new MediaPlayer();
-            mediaPlayer.setDataSource(path+fileName);
+            mediaPlayer.setDataSource(path + fileName);
             mediaPlayer.prepare();
             duration = mediaPlayer.getDuration();
-            Log.d(LOG_TAG,"====Player start, duration = "+ duration);
+            Log.d(LOG_TAG, "====Player start, duration = " + duration);
 
             Double dduration;
             dduration = duration * coefficient;
-            Log.d(LOG_TAG,"====Player start, dduration = "+ dduration);
+            Log.d(LOG_TAG, "====Player start, dduration = " + dduration);
             duration = Integer.valueOf(dduration.intValue());
-            Log.d(LOG_TAG,"====Player start, duration = "+ duration);
+            Log.d(LOG_TAG, "====Player start, duration = " + duration);
 
             mediaPlayer.start();
             mediaPlayer.setOnCompletionListener(this);
@@ -563,6 +574,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
     }
+
     private void releaseRecorder() {
         if (mediaRecorder != null) {
             mediaRecorder.release();
@@ -583,9 +595,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         releasePlayer();
         releaseRecorder();
     }
+
     private void play() {
-        isplay=true;
-        if(true){
+        isplay = true;
+        if (true) {
 
             presskeyenable = false;
 
@@ -603,22 +616,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            ProgressBar.setProgress(counter+1);
+            ProgressBar.setProgress(counter + 1);
             mediaPlayer.setOnCompletionListener(this);
 
             mediaPlayer.start();
         }
     }
 
-    public boolean onCreateOptionsMenu( Menu menu ) {
+    public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    public boolean onOptionsItemSelected( @NonNull MenuItem item ) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
 
             case R.id.update:
                 Toast.makeText(this, "update Clicked", Toast.LENGTH_SHORT).show();
@@ -632,7 +645,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     void read_file_from_SD() {
-        readFromFile="";
+        readFromFile = "";
         Log.d(LOG_TAG, "read_DB_from_SD");
         // проверяем доступность SD
         if (!Environment.getExternalStorageState().equals(
@@ -640,7 +653,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
             return;
         }
-
 
 
         // получаем путь к SD
@@ -660,13 +672,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // читаем содержимое
             while ((str = br.readLine()) != null) {
                 Log.d(LOG_TAG, str);
-                readFromFile=readFromFile+str+"&";
+                readFromFile = readFromFile + str + "&";
             }
             Log.d(LOG_TAG, "readFromFile = " + readFromFile);
             //Toast.makeText(NewActivity.this, readFromFile, Toast.LENGTH_LONG).show();
             try {
                 ParseFile(readFromFile);
-            }catch (Exception $e) {
+            } catch (Exception $e) {
                 // Ничего не делаем
                 Toast toast = Toast.makeText(getApplicationContext(),
                         "неправильный файл satz_database.txt", Toast.LENGTH_SHORT);
@@ -683,7 +695,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     void read_file_from_SD_2() {
-        readFromFile="";
+        readFromFile = "";
         Log.d(LOG_TAG, "read_DB_from_SD");
         // проверяем доступность SD
         if (!Environment.getExternalStorageState().equals(
@@ -705,14 +717,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // читаем содержимое
             while ((str = br.readLine()) != null) {
                 Log.d(LOG_TAG, str);
-                readFromFile=readFromFile+str+"&";
+                readFromFile = readFromFile + str + "&";
             }
             Log.d(LOG_TAG, "readFromFile = " + readFromFile);
             Toast.makeText(MainActivity.this, "readFromFile!", Toast.LENGTH_LONG).show();
 
-            try{
-            ParseFile(readFromFile);
-            }catch (Exception $e) {
+            try {
+                ParseFile(readFromFile);
+            } catch (Exception $e) {
                 // Ничего не делаем
                 Log.d(LOG_TAG, "===============Exeption4==============");
             }
@@ -726,28 +738,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    void ParseFile(String inputMassage){
+    void ParseFile(String inputMassage) {
 
         //    SQLiteDatabase database = dbHelper.getWritableDatabase();
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
 
-
         //     if (inputMassage.matches("(.*;.*;.*;.*;.*&)")) { //\u0009
         if (inputMassage.matches("(.*\\u0009.*\\u0009.*\\u0009.*\\u0009.*\\u0009.*&)")) {
             inputMassage = inputMassage.trim().replaceAll(" +", " ");
-            Log.d(LOG_TAG,"begin");
+            Log.d(LOG_TAG, "begin");
             String line[] = inputMassage.split("&");  // разделяем по записи "&"
-            int count=0;
+            int count = 0;
 
-            database.delete(TABLE_NAME,null,null);
+            database.delete(TABLE_NAME, null, null);
 
-            while (count < line.length){
+            while (count < line.length) {
                 String subline[] = line[count].split("\\u0009");
 
-                Log.d(LOG_TAG,"----------------------------------------------------");
-                Log.d(LOG_TAG, subline[0]+"   "+subline[1]+"   "+subline[2]+"   "+subline[3]+"   "+subline[4]+"   "+subline[5]);
+                Log.d(LOG_TAG, "----------------------------------------------------");
+                Log.d(LOG_TAG, subline[0] + "   " + subline[1] + "   " + subline[2] + "   " + subline[3] + "   " + subline[4] + "   " + subline[5]);
 
                 contentValues.put(DBHelper.KEY_LESSON, subline[1]);
                 contentValues.put(DBHelper.KEY_OURTEXT, subline[2]);
@@ -775,32 +786,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onCompletion(MediaPlayer MP) {
-        Log.d(LOG_TAG,"====Player stopped====");
-        if(radioButton0.isChecked()){countermax=1;counter2max=1;}
-        if(radioButton1.isChecked()){countermax=1;counter2max=2;}
-        if(radioButton2.isChecked()){countermax=2;counter2max=2;}
-        if(radioButton3.isChecked()){countermax=3;counter2max=2;}
-        if(radioButton4.isChecked()){countermax=4;counter2max=3;}
+        Log.d(LOG_TAG, "====Player stopped====");
+        if (radioButton0.isChecked()) {
+            countermax = 1;
+            counter2max = 1;
+        }
+        if (radioButton1.isChecked()) {
+            countermax = 1;
+            counter2max = 2;
+        }
+        if (radioButton2.isChecked()) {
+            countermax = 2;
+            counter2max = 2;
+        }
+        if (radioButton3.isChecked()) {
+            countermax = 3;
+            counter2max = 2;
+        }
+        if (radioButton4.isChecked()) {
+            countermax = 4;
+            counter2max = 2;
+        }
+        if (radioButton5.isChecked()) {
+            countermax = 5;
+            counter2max = 2;
+        }
+        if (radioButton6.isChecked()) {
+            countermax = 6;
+            counter2max = 2;
+        }
 
         //Counter for play translate
-        if(counter < countermax) {
+        if (counter < countermax) {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (playenable) playStart(filename_satz + ".mp3");
                 }
-            }, duration+0);//пауза перед следующим повтором
+            }, duration + 0);//пауза перед следующим повтором
             counter++;
 
             //Counter2 for spring to next row
-            if(counter2 >= counter2max){
-                if(numint < allEds.size()) {
+            if (counter2 >= counter2max) {
+                if (numint < allEds.size()) {
                     ((Button) allEds.get(numint).findViewById(R.id.button_go)).setTextColor(Color.BLACK);
                     rowint++;
                     numint++;
                 }
-                if(numint < allEds.size()) {
+                if (numint < allEds.size()) {
                     ((Button) allEds.get(numint).findViewById(R.id.button_go)).setTextColor(Color.WHITE);
                 }
                 counter2 = 0;
@@ -813,13 +847,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 public void run() {
                     if (playenable) playStart(filename_translate + ".mp3");
                 }
-            }, duration+0);
+            }, duration + 0);
             counter = 0;
 
-            counter2 ++;
+            counter2++;
         }
     }
-    public void extractionID(){
+
+    public void extractionID() {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         Cursor cursor = database.query("anfangtable", null, null, null, null, null, null);
 
@@ -827,7 +862,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 "anfangtable",
                 null,
                 "lesson = ?",
-                new String[] {String.valueOf(my_lesson)},
+                new String[]{String.valueOf(my_lesson)},
                 null,
                 null,
                 null);
@@ -836,21 +871,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             index_id = cursor.getColumnIndex(DBHelper.KEY_ID);
 
             index = cursor.getInt(index_id);
-            Log.d(LOG_TAG,"///////////////////////////////////////////");
-            Log.d(LOG_TAG,"my_id = " + index);
+            Log.d(LOG_TAG, "///////////////////////////////////////////");
+            Log.d(LOG_TAG, "my_id = " + index);
 
         } else
-            Log.d("mLog","0 rows");
+            Log.d("mLog", "0 rows");
 
 
     }
-    public void getthema(){
+
+    public void getthema() {
         //==========================================================================================
         // Получаем список тем
-        int count_themen=0;
+        int count_themen = 0;
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        String [] themen0 = new String[100];
+        String[] themen0 = new String[100];
 
         try {
 
@@ -901,4 +937,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.create().show();
     }
 
+
+    public void onResume() {
+       // IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_HEADSET_PLUG);
+        //filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+
+        registerReceiver(myReceiver, filter);
+        super.onResume();
+    }
+
+
+    private class MusicIntentReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //Log.d(LOG_TAG, "==intent== " + intent);
+            if (intent.getAction().equals("android.bluetooth.device.action.ACL_DISCONNECTED")||intent.getAction().equals("android.intent.action.HEADSET_PLUG")) {
+                // Pause the playback
+                Log.d(LOG_TAG, "==kopfhoerer ist off==");
+                if(playenable) {((Button) allEds.get(numint).findViewById(R.id.button_go)).setTextColor(Color.BLACK);}
+                playStop();
+                playenable = false;
+            }
+        }
+    }
+
+  //  private class bluetoothManager {
+   // }
 }

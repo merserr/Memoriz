@@ -1,11 +1,16 @@
 package com.example.memoriz;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
@@ -79,6 +84,8 @@ public class Training extends Activity implements OnCompletionListener {
     TextView text;
     TextView text2;
 
+    private Training.MusicIntentReceiver myReceiver;
+
 
     public void onCreate(Bundle savedInstanceState) {
 
@@ -88,6 +95,8 @@ public class Training extends Activity implements OnCompletionListener {
         button_player_r_is_played = false;
         button_recorder_d_is_record = false;
         button_recorder_r_is_record = false;
+
+        myReceiver = new Training.MusicIntentReceiver();
 
         Boolean button_player_d_is_played = false;
 
@@ -753,4 +762,43 @@ public class Training extends Activity implements OnCompletionListener {
       //  handler.removeCallbacks(myRunnable);
 
     }
+
+
+    public void onResume() {
+        // IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_HEADSET_PLUG);
+        //filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+
+        registerReceiver(myReceiver, filter);
+        super.onResume();
+    }
+
+
+    private class MusicIntentReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //Log.d(LOG_TAG, "==intent== " + intent);
+            if (intent.getAction().equals("android.bluetooth.device.action.ACL_DISCONNECTED")||intent.getAction().equals("android.intent.action.HEADSET_PLUG")) {
+                // Pause the playback
+                Log.d(LOG_TAG, "==kopfhoerer ist off==");
+               // if(playenable) {((Button) allEds.get(numint).findViewById(R.id.button_go)).setTextColor(Color.BLACK);}
+                autoplayenable = false;
+                playStop();
+                if(autoplayenable){
+                    
+                    autoplayenable = false;
+                    stop = true;
+                    playStop();
+                    releasePlayer();
+                }
+
+               // playenable = false;
+            }
+        }
+    }
+
+
 }
