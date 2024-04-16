@@ -788,7 +788,7 @@ public class Training extends Activity implements OnCompletionListener {
                 autoplayenable = false;
                 playStop();
                 if(autoplayenable){
-                    
+
                     autoplayenable = false;
                     stop = true;
                     playStop();
