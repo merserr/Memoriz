@@ -959,7 +959,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (intent.getAction().equals("android.bluetooth.device.action.ACL_DISCONNECTED")||intent.getAction().equals("android.intent.action.HEADSET_PLUG")&&intent.getIntExtra("state", -1) == 0) {
                 // Pause the playback
                 Log.d(LOG_TAG, "==kopfhoerer ist off==");
-                if(playenable) {((Button) allEds.get(numint).findViewById(R.id.button_go)).setTextColor(Color.BLACK);}
+                if(playenable && numint < allEds.size()) {((Button) allEds.get(numint).findViewById(R.id.button_go)).setTextColor(Color.BLACK);}
                 playStop();
                 playenable = false;
             }
