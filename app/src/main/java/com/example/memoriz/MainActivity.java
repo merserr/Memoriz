@@ -829,10 +829,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //Counter2 for spring to next row
             if (counter2 >= counter2max) {
-                if (numint < allEds.size()) {
+                if (numint < allEds.size()-1) {
                     ((Button) allEds.get(numint).findViewById(R.id.button_go)).setTextColor(Color.BLACK);
                     rowint++;
                     numint++;
+                } else {
+                    ((Button) allEds.get(numint).findViewById(R.id.button_go)).setTextColor(Color.BLACK);
+                    rowint=1;
+                    numint=0;
                 }
                 if (numint < allEds.size()) {
                     ((Button) allEds.get(numint).findViewById(R.id.button_go)).setTextColor(Color.WHITE);
